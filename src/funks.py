@@ -126,6 +126,10 @@ def create_user_profile(username):
     :return: None
     """
     import os
+    from django.conf import settings
+
+    if username in settings.USERNAME_EXCLUDE_LIST:
+        return
 
     os.system(f'useradd -m -p ! {username}')
     os.system(f'mkdir /home/{username}/.ssh')
