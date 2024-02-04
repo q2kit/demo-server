@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+  server:
+    container_name: http-server
+    build: .
+    restart: always
+    ports:
+      - "18443:80"
+      - "2222:22"
+    volumes:
+      - .:/srv/http-server
