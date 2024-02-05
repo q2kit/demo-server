@@ -12,10 +12,8 @@ from .funks import (
     get_available_port as get_available_port_funk,
     gen_nginx_conf,
     gen_key_pair,
-    save_public_key,
+    remove_key_pair,
 )
-
-import os
 
 
 @csrf_exempt
@@ -54,15 +52,12 @@ def get_key_file(request: HttpRequest) -> FileResponse:
         if project.secret != secret:
             return JsonResponse({'error': 'Invalid secret'}, status=403)
 
-        _, private_key = gen_key_pair()
-        private_key_path = f'{project.id}_private_key.pem'
-        f = open(private_key_path, 'wb')
-        f.write(private_key.save_pkcs1())
-        f.close()
-        os.chmod(private_key_path, 0o400)
-        save_public_key(project, private_key_path)
+        _, private_key_path = gen_key_pair(project.user.username)
 
-        return FileResponse(open(f'{project.id}_private_key.pem', 'rb'))
+        import threading
+        threading.Timer(60, remove_key_pair, args=(project.user.username,)).start()  # noqa
+
+        return FileResponse(open(private_key_path, 'rb'))
     else:
         raise Http404
 

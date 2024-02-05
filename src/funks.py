@@ -1,3 +1,6 @@
+import os
+
+
 def domain_validator(domain):
     """
     Validates subdomain string
@@ -5,7 +8,6 @@ def domain_validator(domain):
     :return: True if valid, False if not
     """
     import re
-    import os
     from django.core.exceptions import ValidationError
 
     HTTP_HOST = os.getenv('HTTP_HOST')
@@ -62,8 +64,6 @@ def gen_nginx_conf(domain, port):
     :param domain: string
     :param port: int
     """
-    import os
-
     conf_str = r"""server {
     listen 80;
     server_name %s;
@@ -82,41 +82,37 @@ def gen_nginx_conf(domain, port):
     os.system('service nginx reload')
 
 
-def gen_key_pair() -> tuple:
+def gen_key_pair(username) -> tuple:
     """
     Generates a key pair
-    :return: tuple (public_key: rsa.PublicKey, private_key: rsa.PrivateKey)
+    :param username: string
+    :return: tuple(public_key_path: string, private_key_path: string)
     """
     import rsa
 
-    return rsa.newkeys(2048)
+    _, private_key = rsa.newkeys(2048)
+    private_key_path = f'/home/{username}/private_key.pem'
+    with open(private_key_path, 'wb') as f:
+        f.write(private_key.save_pkcs1())
+    os.chmod(private_key_path, 0o600)
+    public_key_path = f'/home/{username}/authorized_keys'
+    os.system(f'ssh-keygen -y -f {private_key_path} > {public_key_path}')
+    os.chmod(public_key_path, 0o600)
+
+    return public_key_path, private_key_path
 
 
-def save_public_key(project, private_key_path):
+def remove_key_pair(username):
     """
-    Saves public key to project
-    :param project: Project
-    :param public_key: string
+    Removes the key pair
+    :param username: string
     :return: None
     """
-    import os
-
-    username = project.user.username
-
-    HOME = f'/home/{username}'
-    DIR = f'{HOME}/.ssh'
-    FILE = f'{DIR}/authorized_keys'
-
-    # Just in development, because the user is not automatically created
-    if not os.path.exists(DIR):
-        os.makedirs(DIR)
-        os.system(f'chown {username}:{username} {DIR}')
-        os.system(f'chmod 700 {DIR}')
-
-    os.system(f'ssh-keygen -y -f {private_key_path} > {FILE}')
-    os.system(f'chown {username}:{username} {FILE}')
-    os.chmod(FILE, 0o600)
-    os.chmod(DIR, 0o700)
+    DIR = f'/home/{username}/.ssh'
+    if os.path.exists(f'{DIR}/authorized_keys'):
+        os.remove(f'{DIR}/authorized_keys')
+    if os.path.exists(f'{DIR}/private_key.pem'):
+        os.remove(f'{DIR}/private_key.pem')
 
 
 def create_user_profile(username):
@@ -125,7 +121,6 @@ def create_user_profile(username):
     :param username: string
     :return: None
     """
-    import os
     from django.conf import settings
 
     if username in settings.USERNAME_EXCLUDE_LIST:
@@ -144,8 +139,6 @@ def gen_sshd_conf(username):
     :param username: string
     :return: string
     """
-    import os
-
     conf_str = r"""Match User %s
     AllowTcpForwarding yes
     ForceCommand /bin/false

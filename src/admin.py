@@ -13,6 +13,12 @@ class ProjectAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'domain', 'secret',)
     list_display_links = ('id', 'domain')
 
+    def has_add_permission(self, request: HttpRequest) -> bool:
+        return any((
+            request.user.is_superuser,
+            request.user.project_set.count() == 0
+        ))
+
     def get_list_display(self, request: HttpRequest) -> Sequence[str]:
         if request.user.is_superuser:
             return ('id', 'domain', 'user', 'secret')
