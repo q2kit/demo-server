@@ -31,10 +31,10 @@ class ProjectForm(ModelForm):
         return domain
 
 
-class ProjectFormSuperUser(ModelForm):
+class AddProjectFormSuperUser(ModelForm):
     class Meta:
         model = Project
-        fields = ['domain', 'user']
+        fields = ['domain', 'user', 'secret']
         error_messages = {
             'domain': {
                 'unique': "This domain is already in use.",
@@ -52,6 +52,12 @@ class ProjectFormSuperUser(ModelForm):
         except ValidationError as e:
             self._update_errors(e)
         return domain
+
+
+class ChangeProjectFormSuperUser(ModelForm):
+    class Meta:
+        model = Project
+        fields = ['user']
 
 
 def clean_username(self):

@@ -4,7 +4,11 @@ from django.contrib import admin
 from django.http.request import HttpRequest
 
 from .models import Project
-from .forms import ProjectForm, ProjectFormSuperUser
+from .forms import (
+    ProjectForm,
+    AddProjectFormSuperUser,
+    ChangeProjectFormSuperUser,
+)
 
 
 @admin.register(Project)
@@ -18,10 +22,13 @@ class ProjectAdmin(admin.ModelAdmin):
             request.user.project_set.count() == 0
         ))
 
-    def get_readonly_fields(self, request, obj=None):
+    def has_change_permission(self, request: HttpRequest, obj: Any | None = ...) -> bool:  # noqa
+        return request.user.is_superuser
+
+    def get_readonly_fields(self, request: HttpRequest, obj: Any | None = ...) -> Sequence[str]:  # noqa
         if obj:
             return ('domain', 'secret')
-        return ('secret',)
+        return ()
 
     def get_list_display(self, request: HttpRequest) -> Sequence[str]:
         if request.user.is_superuser:
@@ -30,14 +37,24 @@ class ProjectAdmin(admin.ModelAdmin):
 
     def get_form(self, request: Any, obj: Any | None = ..., change: bool = ..., **kwargs: Any) -> Any:  # noqa
         if request.user.is_superuser:
-            return ProjectFormSuperUser
+            if change:
+                return ChangeProjectFormSuperUser
+            else:
+                return AddProjectFormSuperUser
         else:
             return ProjectForm
 
     def get_fields(self, request: HttpRequest, obj: Any | None = ...) -> Sequence[Callable[..., Any] | str]:  # noqa
-        if request.user.is_superuser:
-            return ('domain', 'user', 'secret')
-        return ('domain', 'secret')
+        if obj:
+            if request.user.is_superuser:
+                return ('domain', 'user', 'secret')
+            else:
+                return ('domain', 'secret')
+        else:
+            if request.user.is_superuser:
+                return ('domain', 'user')
+            else:
+                return ('domain',)
 
     def get_queryset(self, request: HttpRequest) -> Any:
         qs = super().get_queryset(request)
