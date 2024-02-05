@@ -65,10 +65,7 @@ def clean_username(self):
     from django.conf import settings
 
     username = self.cleaned_data.get("username")
-    if (
-        username
-        and self._meta.model.objects.filter(username__iexact=username).exists()
-    ):
+    if username and self._meta.model.objects.filter(username__iexact=username).exists():  # noqa
         self._update_errors(
             ValidationError({
                 "username": self.instance.unique_error_message(

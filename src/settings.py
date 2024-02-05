@@ -50,6 +50,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'src.middleware.message.MessageMiddleware',
+    'src.middleware.log.RequestLoggerMiddleware',
 ]
 
 ROOT_URLCONF = 'src.urls'
@@ -155,3 +157,41 @@ USERNAME_EXCLUDE_LIST = (
 )
 
 LOGOUT_REDIRECT_URL = "/"
+
+LOGGING_DIR = os.path.join(BASE_DIR, "logs")
+
+if not os.path.exists(LOGGING_DIR):
+    os.makedirs(LOGGING_DIR)
+
+# List of urls that will not be logged
+LOGGING_EXCEPT_URL_NAME_LIST = (
+    'jsi18n',
+)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": True,
+    "formatters": {
+        "file": {"format": "[%(asctime)s] %(levelname)s %(message)s"},
+    },
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "formatter": "file",
+            "filename": os.path.join(LOGGING_DIR, "request.log"),
+            "maxBytes": 1024 * 1024 * 0.1,  # 0.1 MB per file
+            "backupCount": 5,
+            "encoding": "utf8",
+            "delay": False,
+            "mode": "a",
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+}
