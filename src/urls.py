@@ -23,6 +23,7 @@ from .views import (
     connect,
 )
 from django.http import HttpResponse
+from django.shortcuts import redirect
 
 urlpatterns = [
     path('health', lambda _: HttpResponse('OK')),
@@ -30,4 +31,5 @@ urlpatterns = [
     path('get_connection_info/', get_connection_info),
     path('get_key_file/', get_key_file),
     path('connect/', connect),
+    path('', lambda _: redirect('admin/')),
 ]

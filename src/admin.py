@@ -10,7 +10,7 @@ from .forms import ProjectForm, ProjectFormSuperUser
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     search_fields = ('id', 'domain', 'user__username')
-    readonly_fields = ('id', 'secret',)
+    readonly_fields = ('id', 'domain', 'secret',)
     list_display_links = ('id', 'domain')
 
     def get_list_display(self, request: HttpRequest) -> Sequence[str]:
