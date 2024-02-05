@@ -1,6 +1,7 @@
 version: '3.3'
 services:
   server:
+    image: q2kit/http-server
     container_name: http-server
     build: .
     restart: always

@@ -6,6 +6,7 @@ click==8.1.7
 cryptography==41.0.7
 Django==5.0.1
 django-redis==5.4.0
+gunicorn==21.2.0
 prettytable==3.9.0
 pyasn1==0.5.1
 pycparser==2.21
