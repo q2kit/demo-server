@@ -36,7 +36,8 @@ class ProjectAdmin(admin.ModelAdmin):
         return qs.filter(user=request.user)
 
     def save_model(self, request: HttpRequest, obj: Any, form: Any, change: bool) -> None:  # noqa
-        if not change:
+        # if normal user create project
+        if not change and not request.user.is_superuser:
             obj.user = request.user
 
         super().save_model(request, obj, form, change)
