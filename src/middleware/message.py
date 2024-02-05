@@ -26,11 +26,9 @@ class MessageMiddleware(MiddlewareMixin):
             "media",
             "favicon.ico",
         )
-        return all((
-            request.method == "GET",
-            user.is_authenticated,
-            not user.is_superuser,
-            user.project_set.count() != 0,
-            request.path not in except_paths,
-            not any(keyword in request.path for keyword in except_keywords),
-        ))
+        return request.method == "GET" \
+            and user.is_authenticated \
+            and not user.is_superuser \
+            and user.project_set.count() != 0 \
+            and request.path not in except_paths \
+            and not any(keyword in request.path for keyword in except_keywords)
