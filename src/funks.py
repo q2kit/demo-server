@@ -99,6 +99,7 @@ def gen_key_pair(username) -> tuple:
     os.chmod(private_key_path, 0o600)
     public_key_path = f'{DIR}/authorized_keys'
     os.system(f'ssh-keygen -y -f {private_key_path} > {public_key_path}')
+    os.system(f'chown {username}:{username} {public_key_path}')
     os.chmod(public_key_path, 0o600)
 
     return public_key_path, private_key_path
