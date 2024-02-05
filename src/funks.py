@@ -90,12 +90,14 @@ def gen_key_pair(username) -> tuple:
     """
     import rsa
 
+    DIR = f'/home/{username}/.ssh'
+
     _, private_key = rsa.newkeys(2048)
-    private_key_path = f'/home/{username}/private_key.pem'
+    private_key_path = f'{DIR}/private_key.pem'
     with open(private_key_path, 'wb') as f:
         f.write(private_key.save_pkcs1())
     os.chmod(private_key_path, 0o600)
-    public_key_path = f'/home/{username}/authorized_keys'
+    public_key_path = f'{DIR}/authorized_keys'
     os.system(f'ssh-keygen -y -f {private_key_path} > {public_key_path}')
     os.chmod(public_key_path, 0o600)
 
