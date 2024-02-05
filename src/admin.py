@@ -9,8 +9,8 @@ from .forms import ProjectForm, ProjectFormSuperUser
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    search_fields = ('id', 'domain', 'user__username')
-    list_display_links = ('id', 'domain')
+    search_fields = ('domain', 'user__username')
+    list_display_links = ('domain',)
 
     def has_add_permission(self, request: HttpRequest) -> bool:
         return any((
@@ -20,13 +20,13 @@ class ProjectAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ('id', 'domain', 'secret')
-        return ('id', 'secret')
+            return ('domain', 'secret')
+        return ('secret',)
 
     def get_list_display(self, request: HttpRequest) -> Sequence[str]:
         if request.user.is_superuser:
-            return ('id', 'domain', 'user', 'secret')
-        return ('id', 'domain', 'secret')
+            return ('domain', 'user', 'secret')
+        return ('domain', 'secret')
 
     def get_form(self, request: Any, obj: Any | None = ..., change: bool = ..., **kwargs: Any) -> Any:  # noqa
         if request.user.is_superuser:
@@ -36,8 +36,8 @@ class ProjectAdmin(admin.ModelAdmin):
 
     def get_fields(self, request: HttpRequest, obj: Any | None = ...) -> Sequence[Callable[..., Any] | str]:  # noqa
         if request.user.is_superuser:
-            return ('id', 'domain', 'user', 'secret')
-        return ('id', 'domain', 'secret')
+            return ('domain', 'user', 'secret')
+        return ('domain', 'secret')
 
     def get_queryset(self, request: HttpRequest) -> Any:
         qs = super().get_queryset(request)

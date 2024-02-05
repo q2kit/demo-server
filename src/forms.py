@@ -11,7 +11,7 @@ import os
 class ProjectForm(ModelForm):
     class Meta:
         model = Project
-        fields = ['id', 'domain']
+        fields = ['domain']
         error_messages = {
             'domain': {
                 'unique': "This domain is already in use.",
@@ -34,7 +34,7 @@ class ProjectForm(ModelForm):
 class ProjectFormSuperUser(ModelForm):
     class Meta:
         model = Project
-        fields = ['id', 'domain', 'user']
+        fields = ['domain', 'user']
         error_messages = {
             'domain': {
                 'unique': "This domain is already in use.",

@@ -153,3 +153,5 @@ USERNAME_EXCLUDE_LIST = (
     'sys',
     'sync',
 )
+
+LOGOUT_REDIRECT_URL = "/"
