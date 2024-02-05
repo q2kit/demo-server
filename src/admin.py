@@ -10,7 +10,6 @@ from .forms import ProjectForm, ProjectFormSuperUser
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     search_fields = ('id', 'domain', 'user__username')
-    readonly_fields = ('id', 'domain', 'secret',)
     list_display_links = ('id', 'domain')
 
     def has_add_permission(self, request: HttpRequest) -> bool:
@@ -18,6 +17,11 @@ class ProjectAdmin(admin.ModelAdmin):
             request.user.is_superuser,
             request.user.project_set.count() == 0
         ))
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ('id', 'domain', 'secret')
+        return ('id', 'secret')
 
     def get_list_display(self, request: HttpRequest) -> Sequence[str]:
         if request.user.is_superuser:
