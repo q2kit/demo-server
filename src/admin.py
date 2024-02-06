@@ -9,6 +9,12 @@ from .forms import (
     AddProjectFormSuperUser,
     ChangeProjectFormSuperUser,
 )
+from .funks import (
+    gen_502_page,
+    remove_502_page,
+    gen_nginx_conf,
+    remove_nginx_conf,
+)
 
 
 @admin.register(Project)
@@ -68,3 +74,12 @@ class ProjectAdmin(admin.ModelAdmin):
             obj.user = request.user
 
         super().save_model(request, obj, form, change)
+
+        gen_502_page(obj.domain)
+        gen_nginx_conf(obj.domain, None)
+
+    def delete_model(self, request: HttpRequest, obj: Any) -> None:
+        super().delete_model(request, obj)
+
+        remove_502_page(obj.domain)
+        remove_nginx_conf(obj.domain)

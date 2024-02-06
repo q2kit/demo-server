@@ -1,4 +1,5 @@
 import os
+import jinja2
 
 
 def domain_validator(domain):
@@ -58,28 +59,62 @@ def get_available_port(project_id: int):
     return None
 
 
-def gen_nginx_conf(domain, port):
+def gen_nginx_conf(domain, port=None):
     """
     Generates nginx config file
     :param domain: string
     :param port: int
     """
-    conf_str = r"""server {
-    listen 80;
-    server_name %s;
-
-    location / {
-        proxy_pass http://localhost:%s;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-""" % (domain, port)
-
-    conf_file = open(f'/etc/nginx/sites/{domain}.conf', 'w')
-    conf_file.write(conf_str)
-    conf_file.close()
+    TPL_PATH = 'src/templates/nginx.conf-tpl'
+    with open(TPL_PATH, 'r') as f:
+        tpl_str = f.read()
+    tpl = jinja2.Template(tpl_str)
+    conf_str = tpl.render(domain=domain, port=port)
+    with open(f'/etc/nginx/sites/{domain}.conf', 'w') as f:
+        f.write(conf_str)
     os.system('service nginx reload')
+
+
+def remove_nginx_conf(domain):
+    """
+    Removes the nginx config file
+    :param domain: string
+    """
+    try:
+        os.remove(f'/etc/nginx/sites/{domain}.conf')
+        os.system('service nginx reload')
+    except FileNotFoundError:
+        pass
+
+
+def gen_502_page(domain):
+    """
+    Generates a 502 error page
+    :param domain: string
+    """
+    TPL_PATH = 'src/templates/502.html-tpl'
+    with open(TPL_PATH, 'r') as f:
+        tpl_str = f.read()
+    tpl = jinja2.Template(tpl_str)
+    conf_str = tpl.render(domain=domain)
+    if not os.path.exists('/var/www/http-server/502'):
+        os.makedirs('/var/www/http-server/502')
+    with open(f'/var/www/http-server/502/{domain}.html', 'w') as f:
+        f.write(conf_str)
+
+    os.system('service nginx reload')
+
+
+def remove_502_page(domain):
+    """
+    Removes the 502 error page
+    :param domain: string
+    """
+    try:
+        os.remove(f'/var/www/http-server/502/{domain}.html')
+        os.system('service nginx reload')
+    except FileNotFoundError:
+        pass
 
 
 def gen_key_pair(username) -> tuple:

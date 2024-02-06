@@ -9,6 +9,7 @@ ENV HTTP_HOST=demo.q2k.dev
 ENV SECRET_KEY=secretkeyyyyyyyyyyyyyyyyy
 COPY nginx.conf /etc/nginx/nginx.conf
 RUN mkdir /etc/nginx/sites
+RUN mkdir -p /var/www/http-server/502
 COPY sshd_config.conf /etc/ssh/sshd_config
 WORKDIR /srv/http-server
 COPY . .
