@@ -1,0 +1,4 @@
+Match User {{ username }}
+    AllowTcpForwarding yes
+    ForceCommand /bin/false
+    PasswordAuthentication no

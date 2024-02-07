@@ -177,15 +177,14 @@ def gen_sshd_conf(username):
     :param username: string
     :return: string
     """
-    conf_str = r"""Match User %s
-    AllowTcpForwarding yes
-    ForceCommand /bin/false
-    PasswordAuthentication no
-""" % username
-    DIR = '/etc/ssh/sshd_config.d/user.d'
-    FILE = f'{DIR}/{username}.conf'
-    with open(FILE, 'w') as f:
+    TPL_PATH = 'src/templates/sshd.user.conf-tpl'
+    with open(TPL_PATH, 'r') as f:
+        tpl_str = f.read()
+    tpl = jinja2.Template(tpl_str)
+    conf_str = tpl.render(username=username)
+    CONF_FILE = f'/etc/ssh/sshd_config.d/user.d/{username}.conf'
+    with open(CONF_FILE, 'w') as f:
         f.write(conf_str)
-    os.system(f'chown root:root {FILE}')
-    os.system(f'chmod 600 {FILE}')
+    os.system(f'chown root:root {CONF_FILE}')
+    os.system(f'chmod 600 {CONF_FILE}')
     os.system('service ssh reload')
