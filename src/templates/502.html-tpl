@@ -2,141 +2,151 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ domain }}</title>
-    <style>
-        html {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            text-rendering: optimizeLegibility;
-            text-shadow: rgba(0, 0, 0, 0.01) 0 0 1px;
-            font-family: 'Avenir W01', 'Avenir';
-            font-size: 12px;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ domain }}</title>
+  <link rel="icon" href="https://demo.netswift.org/static/favicon-502.ico" type="image/x-icon">
+  <style>
+    html {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      text-rendering: optimizeLegibility;
+      text-shadow: rgba(0, 0, 0, 0.01) 0 0 1px;
+      font-size: 12px;
+      text-align: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      display: grid;
+      height: 100%;
+      margin: 0;
+      padding: 5px 15px;
+      box-sizing: border-box;
+      grid-template-rows: 75px auto;
+      background: rgb(244, 244, 244);
+      color: rgb(34, 49, 53);
+
+      header {
+        display: grid;
+        position: relative;
+        padding: 15px 5px;
+        align-items: center;
+        justify-items: center;
+        border-bottom: 1px solid rgb(188, 193, 194);
+        box-sizing: border-box;
+
+        svg {
+          position: absolute;
+          top: 50%;
+          left: 0;
+          height: 40px;
+          transform: translateY(-50%);
         }
-        
-        body {
-            display: grid;
-            height: 100%;
-            margin: 0;
-            padding: 5px 15px;
-            box-sizing: border-box;
-            grid-template-rows: 75px auto;
-            background: rgb(244, 244, 244);
-            color: rgb(34, 49, 53);
-            header {
-                display: grid;
-                position: relative;
-                padding: 15px 5px;
-                align-items: center;
-                justify-items: center;
-                border-bottom: 1px solid rgb(188, 193, 194);
-                box-sizing: border-box;
-                svg {
-                    position: absolute;
-                    top: 50%;
-                    left: 0;
-                    height: 40px;
-                    transform: translateY(-50%);
-                }
-                span {
-                    display: inline-flex;
-                    align-items: center;
-                    font-weight: 400;
-                    font-size: 1.333rem;
-                    letter-spacing: 0.01rem;
-                }
-                code {
-                    margin-left: 5px;
-                    padding: 3px 10px;
-                    border-radius: 10px;
-                    color: #c30035;
-                    background: mix(white, rgb(195, 0, 53), 85%);
-                    font-weight: normal;
-                    line-height: 1;
-                }
-            }
-            article {
-                display: grid;
-                align-content: center;
-                justify-content: center;
-                justify-items: center;
-                * {
-                    font-family: 'Roboto Slab';
-                    font-size: 2.667rem;
-                    font-weight: 300;
-                    text-align: center;
-                }
-                p {
-                    font-weight: 400;
-                    font-size: 1.333rem;
-                    letter-spacing: 0.01rem;
-                    text-align: center;
-                }
-            }
+
+        span {
+          display: inline-flex;
+          align-items: center;
+          font-weight: 400;
+          font-size: 1.333rem;
+          letter-spacing: 0.01rem;
         }
-    </style>
+
+        code {
+          margin-left: 5px;
+          padding: 3px 10px;
+          border-radius: 10px;
+          color: #c30035;
+          background: mix(white, rgb(195, 0, 53), 85%);
+          font-weight: normal;
+          line-height: 1;
+        }
+      }
+
+      article {
+        display: grid;
+        align-content: center;
+        justify-content: center;
+        justify-items: center;
+
+        * {
+          font-size: 2.667rem;
+          font-weight: 300;
+          text-align: center;
+        }
+
+        p {
+          font-weight: 400;
+          font-size: 1.333rem;
+          letter-spacing: 0.01rem;
+          text-align: center;
+        }
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <header>
-        <span><code>Welcome your local server to the world!</code></span>
-        <span><code>Now, everyone can access your server at https://{{ domain }}.</code></span>
-    </header>
-    <article>
-        <svg alt="Web browser with concerned expression" width="151px" height="140px" viewBox="0 0 151 140" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <g id="Well shoot..." stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                <g transform="translate(-31.000000, -40.000000)">
-                    <g transform="translate(31.000000, 40.000000)">
-                        <rect id="exclaim-1" fill="#584B86" x="22" y="0" width="2" height="14" rx="1" />
-                        <rect id="exclaim-2" fill="#584B86"
-                            transform="translate(7.000000, 23.000000) rotate(90.000000) translate(-7.000000, -23.000000) "
-                            x="6" y="16" width="2" height="14" rx="1" />
-                        <rect id="exclaim-3" fill="#584B86"
-                            transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) "
-                            x="11" y="5" width="2" height="14" rx="1" />
-                        <ellipse id="shadow" fill="#000000" opacity="0.08" cx="79" cy="129.5" rx="72" ry="10.5" />
-                        <rect id="body" fill="#FFFFFF" x="22" y="22" width="114" height="106" rx="9" />
-                        <polygon id="toolbar" fill="#CDCADD"
-                            points="23 47 79 47 135 47 135 32 135 29 132 25 128 23 29.9948981 23 26 25 24 27 23 30" />
-                        <circle id="toolbar-button-1" stroke="#584B86" stroke-width="2" fill="#FFFFFF" cx="33.5"
-                            cy="34.5" r="2.5" />
-                        <circle id="toolbar-button-2" stroke="#584B86" stroke-width="2" fill="#FFFFFF" cx="43.5"
-                            cy="34.5" r="2.5" />
-                        <circle id="toolbar-button-3" stroke="#584B86" stroke-width="2" fill="#FFFFFF" cx="53.5"
-                            cy="34.5" r="2.5" />
-                        <rect id="toolbar-border-bottom" fill="#584B86" x="22" y="45" width="114" height="2" />
-                        <rect id="toolbar-shadow" fill="#000000" opacity="0.08" x="24" y="47" width="110" height="2" />
-                        <rect id="window-border" stroke="#584B86" stroke-width="2" x="23" y="23" width="112"
-                            height="104" rx="9" />
-                        <g id="eyes">
-                            <ellipse id="eye-left" fill="#584B86" cx="56.5" cy="72.5" rx="3.5" ry="3.5">
-                                <animate attributeName="ry" repeatCount="indefinite" fill="freeze"
-                                    values="3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;0.5;2"
-                                    from="3.5" to="0.5" dur="3s" id="leftEyeAnim" d="leftEyeAnim" />
-                            </ellipse>
-                            <ellipse id="eye-right" fill="#584B86" cx="101.5" cy="72.5" rx="3.5" ry="3.5">
-                                <animate attributeName="ry" repeatCount="indefinite" fill="remove"
-                                    values="3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;0.5;2"
-                                    from="3.5" to="0.5" dur="3s" />
-                            </ellipse>
-                            <animateMotion dur="6s" fill="freeze" calcMode="linear" repeatCount="indefinite"
-                                keyPoints="0; 0;   0;   0;    0;    0;    0.25; 0.25; 0.25; 0.75; 0.75; 0.75;  0.75; 1; 1"
-                                keyTimes=" 0; 0.1; 0.2; 0.3;  0.4;  0.5;  0.6;  0.65; 0.7;  0.75; 0.8;  0.825; 0.85; 0.9; 1"
-                                path="M 0 0 C 5 2, 5 2, 12 0 C 0 3, 0 3, -10 0 H 0" />
-                            <path id="mouth" fill="#584B86" d="M 65 94 Q 79.5 104, 93 94" />
-                        </g>
-                    </g>
-                </g>
+  <header>
+    <span><code>Welcome your local server to the world!</code></span>
+    <span><code>Now, everyone can access your server at https://{{ domain }}.</code></span>
+  </header>
+  <article>
+    <svg alt="Web browser with concerned expression" width="151px" height="140px" viewBox="0 0 151 140" version="1.1"
+      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <g id="Well shoot..." stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-31.000000, -40.000000)">
+          <g transform="translate(31.000000, 40.000000)">
+            <rect id="exclaim-1" fill="#584B86" x="22" y="0" width="2" height="14" rx="1" />
+            <rect id="exclaim-2" fill="#584B86"
+              transform="translate(7.000000, 23.000000) rotate(90.000000) translate(-7.000000, -23.000000) " x="6"
+              y="16" width="2" height="14" rx="1" />
+            <rect id="exclaim-3" fill="#584B86"
+              transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) " x="11"
+              y="5" width="2" height="14" rx="1" />
+            <ellipse id="shadow" fill="#000000" opacity="0.08" cx="79" cy="129.5" rx="72" ry="10.5" />
+            <rect id="body" fill="#FFFFFF" x="22" y="22" width="114" height="106" rx="9" />
+            <polygon id="toolbar" fill="#CDCADD"
+              points="23 47 79 47 135 47 135 32 135 29 132 25 128 23 29.9948981 23 26 25 24 27 23 30" />
+            <circle id="toolbar-button-1" stroke="#584B86" stroke-width="2" fill="#FFFFFF" cx="33.5" cy="34.5"
+              r="2.5" />
+            <circle id="toolbar-button-2" stroke="#584B86" stroke-width="2" fill="#FFFFFF" cx="43.5" cy="34.5"
+              r="2.5" />
+            <circle id="toolbar-button-3" stroke="#584B86" stroke-width="2" fill="#FFFFFF" cx="53.5" cy="34.5"
+              r="2.5" />
+            <rect id="toolbar-border-bottom" fill="#584B86" x="22" y="45" width="114" height="2" />
+            <rect id="toolbar-shadow" fill="#000000" opacity="0.08" x="24" y="47" width="110" height="2" />
+            <rect id="window-border" stroke="#584B86" stroke-width="2" x="23" y="23" width="112" height="104" rx="9" />
+            <g id="eyes">
+              <ellipse id="eye-left" fill="#584B86" cx="56.5" cy="72.5" rx="3.5" ry="3.5">
+                <animate attributeName="ry" repeatCount="indefinite" fill="freeze"
+                  values="3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;0.5;2"
+                  from="3.5" to="0.5" dur="3s" id="leftEyeAnim" d="leftEyeAnim" />
+              </ellipse>
+              <ellipse id="eye-right" fill="#584B86" cx="101.5" cy="72.5" rx="3.5" ry="3.5">
+                <animate attributeName="ry" repeatCount="indefinite" fill="remove"
+                  values="3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;3.5;0.5;2"
+                  from="3.5" to="0.5" dur="3s" />
+              </ellipse>
+              <animateMotion dur="6s" fill="freeze" calcMode="linear" repeatCount="indefinite"
+                keyPoints="0; 0;   0;   0;    0;    0;    0.25; 0.25; 0.25; 0.75; 0.75; 0.75;  0.75; 1; 1"
+                keyTimes=" 0; 0.1; 0.2; 0.3;  0.4;  0.5;  0.6;  0.65; 0.7;  0.75; 0.8;  0.825; 0.85; 0.9; 1"
+                path="M 0 0 C 5 2, 5 2, 12 0 C 0 3, 0 3, -10 0 H 0" />
+              <path id="mouth" fill="#584B86" d="M 65 94 Q 79.5 104, 93 94" />
             </g>
-        </svg>
-        <p>
-            Absolutely!<br>If you're viewing this page, congratulations are in order!<br>We've successfully configured the domain {{ domain }} for you.<br>Your next step is to execute the command to establish the connection, then simply hit F5 to marvel
-            at the results. 🌟
-        </p>
-    </article>
+          </g>
+        </g>
+      </g>
+    </svg>
+    <p>
+      Absolutely!<br>If you're viewing this page, congratulations are in order!<br>We've successfully configured the
+      domain {{ domain }} for you.<br>Your next step is to execute the command to establish the connection,
+      then simply hit F5 to marvel
+      at the results. 🌟
+    </p>
+  </article>
 </body>
 
 </html>
