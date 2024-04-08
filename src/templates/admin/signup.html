@@ -1,0 +1,80 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/signup.css" %}">
+<script type="text/javascript" src="{% static "admin/js/register.js" %}"></script>
+{{ form.media }}
+{% endblock %}
+
+{% block bodyclass %}register{% endblock %}
+
+{% block usertools %}{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+{% if form.errors and not form.non_field_errors %}
+<p class="errornote">
+{% if form.errors.items|length == 1 %}{% translate "Please correct the error below." %}{% else %}{% translate "Please correct the errors below." %}{% endif %}
+</p>
+{% endif %}
+
+{% if form.non_field_errors %}
+{% for error in form.non_field_errors %}
+<p class="errornote">
+    {{ error }}
+</p>
+{% endfor %}
+{% endif %}
+
+<div id="content-main">
+
+{% if user.is_authenticated %}
+<p class="errornote">
+{% blocktranslate trimmed %}
+  You are authenticated as {{ user }}. If you proceed with the registration, the new account will be created and signed in with these credentials.
+{% endblocktranslate %}
+</p>
+{% endif %}
+
+<form action="{{ signup_url }}" method="post" id="register-form">{% csrf_token %}
+  {% for field in form %}
+    <div class="form-row">
+      {{ field.label_tag }}
+      {{ field }}
+      {{ field.errors }}
+    </div>
+  {% endfor %}
+  <div class="login-link">
+    <a tabindex="-1" href="{% url 'admin:login' %}">Already have an account?</a>
+  </div>
+  <div class="submit-row">
+    <input type="submit" value="Sign Up">
+  </div>
+  {% for field in form %}
+    {% with break_loop=False %}
+    {% endwith %}
+    {% if field.errors and not break_loop %}
+
+      <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+          {% if field == form.password2 %}
+            document.getElementById("{{ form.password.id_for_label }}").focus();
+          {% else %}  
+            document.getElementById("{{ field.id_for_label }}").focus();
+          {% endif %}
+        });
+      </script>
+      {% with break_loop=True %}
+      {% endwith %}
+    {% endif %}
+  {% endfor %}
+</form>
+{% endblock %}

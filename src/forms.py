@@ -1,6 +1,11 @@
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
+from django import forms
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.forms import UsernameField
+from django.core.validators import MinLengthValidator
+from django.contrib.auth.models import User
 
 from .models import Project
 from .funks import domain_validator
@@ -84,3 +89,57 @@ def clean_username(self):
 
 
 UserCreationForm.clean_username = clean_username
+
+
+class RegistrationForm(forms.Form):
+    error_messages = {
+        "password_mismatch": _("The two password fields didn't match."),
+        "username_exists": _("This username is already in use."),
+        "username_not_allowed": "This username is not allowed.",
+    }
+
+    username = UsernameField(
+        label=_("Username"),
+        widget=forms.TextInput(attrs={"autofocus": True, "inputmode": "text"}),
+        validators=[MinLengthValidator(3)],
+    )
+    password = forms.CharField(
+        label=_("Password"),
+        strip=False,
+        widget=forms.PasswordInput(),
+        validators=[MinLengthValidator(6)],
+    )
+    password2 = forms.CharField(
+        label=_("Confirm Password"),
+        strip=False,
+        widget=forms.PasswordInput(attrs={"id": "id_password2"}),
+    )
+
+    def clean_username(self):
+        """Reject usernames that differ only in case."""
+        from django.conf import settings
+
+        username = self.cleaned_data.get("username")
+        if username and User.objects.filter(username__iexact=username).exists():
+            raise forms.ValidationError(
+                self.error_messages["username_exists"],
+                code="username_exists",
+            )
+        elif username in settings.USERNAME_EXCLUDE_LIST:
+            raise forms.ValidationError(
+                self.error_messages["username_not_allowed"],
+                code="username_not_allowed",
+            )
+        else:
+            return username
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get("password")
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            self.cleaned_data["password"] = password1
+            raise forms.ValidationError(
+                self.error_messages["password_mismatch"],
+                code="password_mismatch",
+            )
+        return password2

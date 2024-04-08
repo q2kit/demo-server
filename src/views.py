@@ -6,6 +6,9 @@ from django.http import (
 )
 from django.views.decorators.csrf import csrf_exempt
 from django.core.cache import cache
+from django.contrib.auth import login
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
 
 from .models import Project
 from .funks import (
@@ -14,6 +17,7 @@ from .funks import (
     gen_key_pair,
     remove_key_pair,
 )
+from .forms import RegistrationForm
 
 
 @csrf_exempt
@@ -89,3 +93,25 @@ def connect(request):
 
     else:
         raise Http404
+
+
+def signup(request):
+    if request.method == "POST":
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = User.objects.create_user(
+                username=form.cleaned_data["username"],
+                password=form.cleaned_data["password"],
+                is_active=True,
+                is_staff=True,
+            )
+            login(request, user)
+            return redirect("admin:index")
+    else:
+        form = RegistrationForm()
+
+    return render(
+        request,
+        "admin/signup.html",
+        {"form": form},
+    )

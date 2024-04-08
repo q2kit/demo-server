@@ -21,12 +21,14 @@ from .views import (
     get_connection_info,
     get_key_file,
     connect,
+    signup,
 )
 from django.http import HttpResponse
 from django.shortcuts import redirect
 
 urlpatterns = [
     path('health', lambda _: HttpResponse('OK')),
+    path('admin/signup/', signup, name='signup'),
     path('admin/', admin.site.urls),
     path('get_connection_info/', get_connection_info),
     path('get_key_file/', get_key_file),
