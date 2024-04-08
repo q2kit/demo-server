@@ -34,7 +34,7 @@ class ProjectForm(ModelForm):
 class AddProjectFormSuperUser(ModelForm):
     class Meta:
         model = Project
-        fields = ['domain', 'user', 'secret']
+        fields = ['domain', 'user']
         error_messages = {
             'domain': {
                 'unique': "This domain is already in use.",
