@@ -22,15 +22,6 @@ class ProjectAdmin(admin.ModelAdmin):
     search_fields = ('domain', 'user__username')
     list_display_links = ('domain',)
 
-    def has_add_permission(self, request: HttpRequest) -> bool:
-        return any((
-            request.user.is_superuser,
-            request.user.project_set.count() == 0
-        ))
-
-    def has_change_permission(self, request: HttpRequest, obj: Any | None = ...) -> bool:  # noqa
-        return request.user.is_superuser
-
     def get_readonly_fields(self, request: HttpRequest, obj: Any | None = ...) -> Sequence[str]:  # noqa
         if obj:
             return ('domain', 'secret')
