@@ -1,8 +1,8 @@
 version: '3.3'
 services:
   server:
-    image: q2kit/http-server
-    container_name: http-server
+    image: q2kit/demos
+    container_name: demos
     build: .
     restart: always
     ports:

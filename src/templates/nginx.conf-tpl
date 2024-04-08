@@ -14,12 +14,12 @@ server {
         proxy_set_header    Connection $connection_upgrade;
         error_page 502 = @handle502;
         {% else %}
-        root /var/www/http-server/502/;
+        root /var/www/demos/502/;
         try_files /{{ domain }}.html =444;
         {% endif %}
     }
     location @handle502 {
-        root /var/www/http-server/502/;
+        root /var/www/demos/502/;
         try_files /{{ domain }}.html =444;
     }
 }

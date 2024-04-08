@@ -97,9 +97,9 @@ def gen_502_page(domain):
         tpl_str = f.read()
     tpl = jinja2.Template(tpl_str)
     conf_str = tpl.render(domain=domain)
-    if not os.path.exists('/var/www/http-server/502'):
-        os.makedirs('/var/www/http-server/502')
-    with open(f'/var/www/http-server/502/{domain}.html', 'w') as f:
+    if not os.path.exists('/var/www/demos/502'):
+        os.makedirs('/var/www/demos/502')
+    with open(f'/var/www/demos/502/{domain}.html', 'w') as f:
         f.write(conf_str)
 
     os.system('service nginx reload')
@@ -111,7 +111,7 @@ def remove_502_page(domain):
     :param domain: string
     """
     try:
-        os.remove(f'/var/www/http-server/502/{domain}.html')
+        os.remove(f'/var/www/demos/502/{domain}.html')
         os.system('service nginx reload')
     except FileNotFoundError:
         pass
