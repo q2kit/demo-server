@@ -36,7 +36,7 @@ class ProjectForm(ModelForm):
         return domain
 
 
-class AddProjectFormSuperUser(ModelForm):
+class ProjectFormSuperUser(ProjectForm):
     class Meta:
         model = Project
         fields = ['domain', 'user']
@@ -45,24 +45,6 @@ class AddProjectFormSuperUser(ModelForm):
                 'unique': "This domain is already in use.",
             }
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['domain'].initial = f".{os.getenv('HTTP_HOST')}"
-
-    def clean_domain(self):
-        domain = self.cleaned_data['domain']
-        try:
-            domain_validator(domain)
-        except ValidationError as e:
-            self._update_errors(e)
-        return domain
-
-
-class ChangeProjectFormSuperUser(ModelForm):
-    class Meta:
-        model = Project
-        fields = ['user']
 
 
 def clean_username(self):

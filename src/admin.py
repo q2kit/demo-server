@@ -8,8 +8,7 @@ from django.contrib.auth.models import User, Group
 from .models import Project
 from .forms import (
     ProjectForm,
-    AddProjectFormSuperUser,
-    ChangeProjectFormSuperUser,
+    ProjectFormSuperUser,
 )
 from .funks import (
     gen_502_page,
@@ -26,7 +25,10 @@ class ProjectAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request: HttpRequest, obj: Any | None = ...) -> Sequence[str]:  # noqa
         if obj:
-            return ('domain', 'secret')
+            if request.user.is_superuser:
+                return ('secret',)
+            else:
+                return ('domain', 'secret')
         return ()
 
     def get_list_display(self, request: HttpRequest) -> Sequence[str]:
@@ -36,10 +38,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
     def get_form(self, request: Any, obj: Any | None = ..., change: bool = ..., **kwargs: Any) -> Any:  # noqa
         if request.user.is_superuser:
-            if change:
-                return ChangeProjectFormSuperUser
-            else:
-                return AddProjectFormSuperUser
+            return ProjectFormSuperUser
         else:
             return ProjectForm
 
