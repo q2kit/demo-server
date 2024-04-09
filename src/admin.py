@@ -2,6 +2,8 @@ from collections.abc import Callable, Sequence
 from typing import Any
 from django.contrib import admin
 from django.http.request import HttpRequest
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User, Group
 
 from .models import Project
 from .forms import (
@@ -74,3 +76,14 @@ class ProjectAdmin(admin.ModelAdmin):
 
         remove_502_page(obj.domain)
         remove_nginx_conf(obj.domain)
+
+
+admin.site.unregister(User)
+admin.site.unregister(Group)
+
+
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+    def get_queryset(self, request: HttpRequest) -> Any:
+        qs = super().get_queryset(request)
+        return qs.filter(is_superuser=False)

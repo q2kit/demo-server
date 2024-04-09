@@ -171,6 +171,21 @@ def create_user_profile(username):
     gen_sshd_conf(username)
 
 
+def delete_user_profile(username):
+    """
+    Deletes a user and removes the .ssh directory
+    :param username: string
+    :return: None
+    """
+    from django.conf import settings
+
+    if username in settings.USERNAME_EXCLUDE_LIST:
+        return
+
+    os.system(f'userdel -r {username}')
+    remove_sshd_conf(username)
+
+
 def gen_sshd_conf(username):
     """
     Generates sshd config file
@@ -188,3 +203,17 @@ def gen_sshd_conf(username):
     os.system(f'chown root:root {CONF_FILE}')
     os.system(f'chmod 600 {CONF_FILE}')
     os.system('service ssh reload')
+
+
+def remove_sshd_conf(username):
+    """
+    Removes the sshd config file
+    :param username: string
+    :return: None
+    """
+    CONF_FILE = f'/etc/ssh/sshd_config.d/user.d/{username}.conf'
+    try:
+        os.remove(CONF_FILE)
+        os.system('service ssh reload')
+    except FileNotFoundError:
+        pass

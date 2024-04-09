@@ -1,10 +1,10 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 
-from .funks import create_user_profile
+from .funks import create_user_profile, delete_user_profile
 from .models import Project
 
 
@@ -28,3 +28,8 @@ def create_user_profile_signal(sender, instance, created, **kwargs):
         instance.is_active = True
         instance.is_staff = True
         instance.save()
+
+
+@receiver(post_delete, sender=User)
+def delete_user_profile_signal(sender, instance, **kwargs):
+    delete_user_profile(instance.username)
