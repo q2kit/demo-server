@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.forms import UsernameField
 from django.core.validators import MinLengthValidator
 from django.contrib.auth.models import User
+from django.contrib.admin import widgets
+from django.contrib.admin.sites import site as admin_site
 
 from .models import Project
 from .funks import domain_validator
@@ -45,6 +47,18 @@ class ProjectFormSuperUser(ProjectForm):
                 'unique': "This domain is already in use.",
             }
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['user'].widget = widgets.RelatedFieldWidgetWrapper(
+            self.fields['user'].widget,
+            Project._meta.get_field('user').remote_field,
+            admin_site,
+            can_add_related=True,
+            can_change_related=True,
+            can_delete_related=True,
+            can_view_related=True,
+        )
 
 
 def clean_username(self):
