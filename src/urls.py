@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.urls import path
 
 from .views import (
+    signup,
     get_connection_info,
     get_key_file,
     connect,
-    signup,
+    disconnect,
 )
 from django.http import HttpResponse
 from django.shortcuts import redirect
@@ -33,5 +34,6 @@ urlpatterns = [
     path('get_connection_info/', get_connection_info),
     path('get_key_file/', get_key_file),
     path('connect/', connect),
+    path('disconnect/', disconnect),
     path('', lambda _: redirect('admin/')),
 ]

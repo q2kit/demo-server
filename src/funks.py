@@ -87,6 +87,14 @@ def remove_nginx_conf(domain):
         pass
 
 
+def gen_default_nginx_conf(domain):
+    """
+    Generates a default page
+    :param domain: string
+    """
+    gen_nginx_conf(domain)
+
+
 def gen_502_page(domain):
     """
     Generates a 502 error page

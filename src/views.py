@@ -14,6 +14,7 @@ from .models import Project
 from .funks import (
     get_available_port as get_available_port_funk,
     gen_nginx_conf,
+    gen_default_nginx_conf as reset_default_nginx_conf,
     gen_key_pair,
     remove_key_pair,
 )
@@ -86,6 +87,30 @@ def connect(request):
 
         cache.delete(port)
         gen_nginx_conf(domain, port)
+
+        return JsonResponse({
+            'success': True,
+        })
+
+    else:
+        raise Http404
+
+
+@csrf_exempt
+def disconnect(request):
+    if request.method == 'POST':
+        domain = request.POST.get('domain')
+        secret = request.POST.get('secret')
+
+        try:
+            project = Project.objects.get(domain=domain)
+        except Project.DoesNotExist:
+            return JsonResponse({'error': 'Project not found'}, status=404)
+
+        if project.secret != secret:
+            return JsonResponse({'error': 'Invalid secret'}, status=403)
+
+        reset_default_nginx_conf(domain)
 
         return JsonResponse({
             'success': True,
