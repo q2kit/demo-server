@@ -68,7 +68,7 @@ class ProjectAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
         gen_502_page(obj.domain)
-        gen_default_nginx_conf(obj.domain, None)
+        gen_default_nginx_conf(obj.domain)
 
     def delete_model(self, request: HttpRequest, obj: Any) -> None:
         super().delete_model(request, obj)

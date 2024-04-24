@@ -27,6 +27,11 @@ from .views import (
 from django.http import HttpResponse
 from django.shortcuts import redirect
 
+admin.site.site_header = "DEMOS"
+admin.site.site_title = "DEMOS"
+admin.site.index_title = "Welcome to Demos"
+admin.site.site_url = None
+
 urlpatterns = [
     path('health', lambda _: HttpResponse('OK')),
     path('admin/signup/', signup, name='signup'),
