@@ -23,6 +23,7 @@ from .views import (
     get_key_file,
     connect,
     disconnect,
+    keep_alive_connection,
 )
 from django.http import HttpResponse
 from django.shortcuts import redirect
@@ -40,5 +41,6 @@ urlpatterns = [
     path('get_key_file/', get_key_file),
     path('connect/', connect),
     path('disconnect/', disconnect),
+    path('keep_alive/', keep_alive_connection),
     path('', lambda _: redirect('admin/')),
 ]

@@ -13,8 +13,6 @@ from django.contrib.auth.models import User
 from .models import Project
 from .funks import (
     get_available_port as get_available_port_funk,
-    gen_nginx_conf,
-    gen_default_nginx_conf as reset_default_nginx_conf,
     gen_key_pair,
     remove_key_pair,
 )
@@ -77,16 +75,25 @@ def connect(request):
         try:
             project = Project.objects.get(domain=domain)
         except Project.DoesNotExist:
-            return JsonResponse({'error': 'Project not found'}, status=404)
+            return JsonResponse({
+                'success': False,
+                'error': 'Project not found'
+            }, status=404)
 
         if project.secret != secret:
-            return JsonResponse({'error': 'Invalid secret'}, status=403)
+            return JsonResponse({
+                'success': False,
+                'error': 'Invalid secret'
+            }, status=403)
 
         if cache.get(port) != project.id:
-            return JsonResponse({'error': 'Port not available'}, status=409)
+            return JsonResponse({
+                'success': False,
+                'error': 'Port not available'
+            }, status=409)
 
         cache.delete(port)
-        gen_nginx_conf(domain, port)
+        project.connect(port)
 
         return JsonResponse({
             'success': True,
@@ -110,13 +117,25 @@ def disconnect(request):
         if project.secret != secret:
             return JsonResponse({'error': 'Invalid secret'}, status=403)
 
-        reset_default_nginx_conf(domain)
+        project.disconnect()
 
         return JsonResponse({
             'success': True,
         })
 
     else:
+        raise Http404
+
+
+def keep_alive_connection(request):
+    domain = request.POST.get('domain')
+    try:
+        project = Project.objects.get(domain=domain)
+        project.keep_alive_connection()
+        return JsonResponse({
+            'success': True,
+        })
+    except Project.DoesNotExist:
         raise Http404
 
 
