@@ -6,16 +6,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
 
 from .models import Project
-from .forms import (
-    ProjectForm,
-    ProjectFormSuperUser,
-)
-from .funks import (
-    gen_502_page,
-    remove_502_page,
-    gen_default_nginx_conf,
-    remove_nginx_conf,
-)
+from .forms import ProjectForm, ProjectFormSuperUser
 
 
 @admin.register(Project)
@@ -34,9 +25,10 @@ class ProjectAdmin(admin.ModelAdmin):
     def get_list_display(self, request: HttpRequest) -> Sequence[str]:
         if request.user.is_superuser:
             return ('domain', 'user', 'secret')
-        return ('domain', 'secret')
+        else:
+            return ('domain', 'secret')
 
-    def get_form(self, request: Any, obj: Any | None = ..., change: bool = ..., **kwargs: Any) -> Any:  # noqa
+    def get_form(self, request: HttpRequest, obj: Any | None = ..., change: bool = ..., **kwargs: Any) -> Any:  # noqa
         if request.user.is_superuser:
             return ProjectFormSuperUser
         else:
@@ -66,15 +58,6 @@ class ProjectAdmin(admin.ModelAdmin):
             obj.user = request.user
 
         super().save_model(request, obj, form, change)
-
-        gen_502_page(obj.domain)
-        gen_default_nginx_conf(obj.domain)
-
-    def delete_model(self, request: HttpRequest, obj: Any) -> None:
-        super().delete_model(request, obj)
-
-        remove_502_page(obj.domain)
-        remove_nginx_conf(obj.domain)
 
 
 admin.site.unregister(User)

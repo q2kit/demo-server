@@ -4,7 +4,14 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 
-from .funks import create_user_profile, delete_user_profile
+from .funks import (
+    create_user_profile,
+    delete_user_profile,
+    gen_502_page,
+    gen_default_nginx_conf,
+    remove_502_page,
+    remove_nginx_conf,
+)
 from .models import Project
 
 
@@ -33,3 +40,15 @@ def create_user_profile_signal(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=User)
 def delete_user_profile_signal(sender, instance, **kwargs):
     delete_user_profile(instance.username)
+
+
+@receiver(post_save, sender=Project)
+def save_project_signal(sender, instance, created, **kwargs):
+    gen_502_page(instance.domain)
+    gen_default_nginx_conf(instance.domain)
+
+
+@receiver(post_delete, sender=User)
+def delete_project_signal(sender, instance, **kwargs):
+    remove_502_page(instance.domain)
+    remove_nginx_conf(instance.domain)
