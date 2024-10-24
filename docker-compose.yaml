@@ -8,3 +8,5 @@ services:
     ports:
       - "18443:80"
       - "2222:22"
+    volumes:
+      - /srv/demos/db.sqlite3:db.sqlite3
