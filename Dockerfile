@@ -5,8 +5,6 @@ RUN ssh-keygen -A
 RUN mkdir /run/sshd
 # for user-specific sshd_config
 RUN mkdir /etc/ssh/sshd_config.d/user.d
-ENV HTTP_HOST=demo.netswift.org
-ENV SECRET_KEY=secretkeyyyyyyyyyyyyyyyyy
 COPY nginx.conf /etc/nginx/nginx.conf
 RUN mkdir /etc/nginx/sites
 RUN mkdir -p /var/www/demos/502
