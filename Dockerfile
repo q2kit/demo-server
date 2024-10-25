@@ -14,4 +14,5 @@ COPY . .
 RUN cp .env.example .env
 RUN pip install -r requirements.txt
 RUN python manage.py collectstatic --noinput
+RUN python manage.py migrate
 CMD nginx && redis-server --daemonize yes && gunicorn -w 5 src.wsgi:application -b 0.0.0.0:8000 --daemon && /usr/sbin/sshd -D
