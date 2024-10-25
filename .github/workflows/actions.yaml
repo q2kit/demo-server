@@ -50,7 +50,6 @@ jobs:
 
       - name: Build Docker image
         run: |
-          cp .env.example .env
           docker build -t demos:latest .
 
       - name: Push Docker image

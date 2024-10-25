@@ -31,7 +31,11 @@ DEBUG = False
 
 ALLOWED_HOSTS = [f"{os.environ['HTTP_HOST']}"]
 
-CSRF_TRUSTED_ORIGINS = [f"https://{os.environ['HTTP_HOST']}"]
+CSRF_TRUSTED_ORIGINS = [
+    f"http://{os.environ['HTTP_HOST']}",
+    f"https://{os.environ['HTTP_HOST']}",
+    f"http://{os.environ['HTTP_HOST']}:18443",
+]
 
 # Application definition
 

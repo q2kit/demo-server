@@ -1,13 +1,8 @@
-version: '3.3'
 services:
   server:
-    image: q2kit/demos
     container_name: demos
     build: .
     restart: always
     ports:
       - "18443:80"
       - "2222:22"
-    volumes:
-      - /srv/demos/db.sqlite3:db.sqlite3
-      - /srv/demos/.env:.env
