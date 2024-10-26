@@ -106,7 +106,7 @@ def gen_502_page(domain):
     tpl = jinja2.Template(tpl_str)
     conf_str = tpl.render(
         domain=domain,
-        HOST=os.getenv('HOST')
+        HOST=os.getenv('HTTP_HOST')
     )
     if not os.path.exists('/var/www/demos/502'):
         os.makedirs('/var/www/demos/502')
