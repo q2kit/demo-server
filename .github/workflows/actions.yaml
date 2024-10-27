@@ -72,5 +72,7 @@ jobs:
               -p 2222:22 \
               -v /srv/demos/db.sqlite3:/srv/demos/db.sqlite3 \
               -v /srv/demos/.env:/srv/demos/.env \
-              ${{ secrets.DOCKERHUB_USERNAME }}/demos:latest
+              -v /srv/demos/nginx/logs:/var/log/nginx \
+              ${{ secrets.DOCKERHUB_USERNAME }}/demos:latest && \
+            docker exec demos python manage.py generate_config
           '
