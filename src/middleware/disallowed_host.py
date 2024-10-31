@@ -8,4 +8,4 @@ class DisallowedHostMiddleware(MiddlewareMixin):
         try:
             request.get_host()
         except DisallowedHost:
-            return HttpResponse(status=400)
+            return HttpResponse(status=406)
