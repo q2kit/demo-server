@@ -48,7 +48,7 @@ def save_project_signal(sender, instance, created, **kwargs):
     gen_default_nginx_conf(instance.domain)
 
 
-@receiver(post_delete, sender=User)
+@receiver(post_delete, sender=Project)
 def delete_project_signal(sender, instance, **kwargs):
     remove_502_page(instance.domain)
     remove_nginx_conf(instance.domain)
