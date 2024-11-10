@@ -7,7 +7,7 @@ from src.funks import create_user_profile, gen_502_page, gen_default_nginx_conf
 class Command(BaseCommand):
     help = "Generate nginx config, ssh config"
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options):  # noqa: U100
         for user in User.objects.filter(is_superuser=False):
             try:
                 create_user_profile(user.username)

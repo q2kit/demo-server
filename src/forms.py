@@ -84,7 +84,7 @@ def clean_username(self):
         return username
 
 
-UserCreationForm.clean_username = clean_username
+UserCreationForm.clean_username = clean_username  # type ignore[method-assign]
 
 
 class RegistrationForm(forms.Form):

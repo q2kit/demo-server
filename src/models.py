@@ -12,13 +12,13 @@ import threading
 
 
 class Project(models.Model):
-    domain = models.CharField(max_length=255, unique=True)
-    user = models.ForeignKey(
+    domain: str = models.CharField(max_length=255, unique=True)
+    user: User = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         limit_choices_to={'is_superuser': False},
     )
-    secret = models.CharField(max_length=255, default=gen_secret)
+    secret: str = models.CharField(max_length=255, default=gen_secret)
 
     def __str__(self) -> str:
         return self.domain

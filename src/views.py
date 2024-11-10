@@ -60,7 +60,8 @@ def get_key_file(request: HttpRequest) -> FileResponse:
         import threading
         threading.Timer(60, remove_key_pair, args=(project.user.username,)).start()  # noqa
 
-        return FileResponse(open(private_key_path, 'rb'))
+        with open(private_key_path, 'rb') as response:
+            return FileResponse(response)
     else:
         raise Http404
 

@@ -16,7 +16,7 @@ from .models import Project
 
 
 @receiver(post_save, sender=User)
-def create_user_profile_signal(sender, instance, created, **kwargs):
+def create_user_profile_signal(sender, instance, created, **kwargs):  # noqa: U100
     if created:
         create_user_profile(instance.username)
 
@@ -38,17 +38,17 @@ def create_user_profile_signal(sender, instance, created, **kwargs):
 
 
 @receiver(post_delete, sender=User)
-def delete_user_profile_signal(sender, instance, **kwargs):
+def delete_user_profile_signal(sender, instance, **kwargs):  # noqa: U100
     delete_user_profile(instance.username)
 
 
 @receiver(post_save, sender=Project)
-def save_project_signal(sender, instance, created, **kwargs):
+def save_project_signal(sender, instance, created, **kwargs):  # noqa: U100
     gen_502_page(instance.domain)
     gen_default_nginx_conf(instance.domain)
 
 
 @receiver(post_delete, sender=Project)
-def delete_project_signal(sender, instance, **kwargs):
+def delete_project_signal(sender, instance, **kwargs):  # noqa: U100
     remove_502_page(instance.domain)
     remove_nginx_conf(instance.domain)
