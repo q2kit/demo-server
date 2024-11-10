@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.http.request import HttpRequest
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
+from django.utils.translation import gettext_lazy as _
 
 from .models import Project
 from .forms import ProjectForm, ProjectFormSuperUser
@@ -66,6 +67,45 @@ admin.site.unregister(Group)
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
+    fieldsets = (
+        (
+            _("Personal info"),
+            {
+                "fields": (
+                    "username",
+                    "password",
+                    "first_name",
+                    "last_name",
+                    "email"
+                )
+            }
+        ),
+        (
+            _("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                ),
+            },
+        ),
+        (
+            _("Important dates"),
+            {
+                "fields": (
+                    "last_login",
+                    "date_joined"
+                )
+            }
+        ),
+    )
+
     def get_queryset(self, request: HttpRequest) -> Any:
         qs = super().get_queryset(request)
         return qs.filter(is_superuser=False)
+
+    def get_readonly_fields(self, request: HttpRequest, obj: Any | None = ...) -> Sequence[str]:  # noqa
+        res = super().get_readonly_fields(request, obj)
+        if obj:
+            res += ('username',)
+        return res
