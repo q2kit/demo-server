@@ -1,9 +1,9 @@
+import logging
+from ipware import get_client_ip
+
 from django.utils.deprecation import MiddlewareMixin
 from django.conf import settings
 from django.urls import resolve
-
-import logging
-from ipware import get_client_ip
 
 
 class RequestLoggerMiddleware(MiddlewareMixin):

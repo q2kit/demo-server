@@ -1,21 +1,22 @@
-from django.forms import ModelForm
-from django.contrib.auth.forms import UserCreationForm
-from django.core.exceptions import ValidationError
-from django import forms
-from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.forms import UsernameField
-from django.core.validators import MinLengthValidator
-from django.contrib.auth.models import User
-from django.contrib.admin import widgets
-from django.contrib.admin.sites import site as admin_site
-
-from .models import Project
-from .funks import domain_validator
-
 import os
 
 
-class ProjectForm(ModelForm):
+from django import forms
+from django.conf import settings
+
+from django.contrib.admin import widgets
+from django.contrib.admin.sites import site as admin_site
+from django.contrib.auth.forms import UserCreationForm, UsernameField
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.core.validators import MinLengthValidator
+from django.utils.translation import gettext_lazy as _
+
+from src.models import Project
+from src.funks import domain_validator
+
+
+class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ['domain']
@@ -63,8 +64,6 @@ class ProjectFormSuperUser(ProjectForm):
 
 def clean_username(self):
     """Reject usernames that differ only in case."""
-    from django.conf import settings
-
     username = self.cleaned_data.get("username")
     if username and self._meta.model.objects.filter(username__iexact=username).exists():  # noqa
         self._update_errors(
@@ -113,8 +112,6 @@ class RegistrationForm(forms.Form):
 
     def clean_username(self):
         """Reject usernames that differ only in case."""
-        from django.conf import settings
-
         username = self.cleaned_data.get("username")
         if username and User.objects.filter(username__iexact=username).exists():
             raise forms.ValidationError(

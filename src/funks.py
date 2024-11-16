@@ -1,5 +1,13 @@
 import os
 import jinja2
+import re
+import rsa
+import secrets
+import socket
+
+from django.conf import settings
+from django.core.cache import cache
+from django.core.exceptions import ValidationError
 
 
 def domain_validator(domain):
@@ -8,8 +16,6 @@ def domain_validator(domain):
     :param subdomain: string
     :return: True if valid, False if not
     """
-    import re
-    from django.core.exceptions import ValidationError
 
     HTTP_HOST = os.getenv('HTTP_HOST')
     postfix = f'.{HTTP_HOST}'
@@ -35,7 +41,6 @@ def gen_secret():
     Generates a secret string
     :return: string
     """
-    import secrets
 
     return secrets.token_urlsafe(32)
 
@@ -45,8 +50,6 @@ def get_available_port(project_id: int):
     Generates a port number that is not in use on the host
     :return: int
     """
-    import socket
-    from django.core.cache import cache
 
     for port in range(20000, 30001):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -134,7 +137,6 @@ def gen_key_pair(username) -> tuple:
     :param username: string
     :return: tuple(public_key_path: string, private_key_path: string)
     """
-    import rsa
 
     DIR = f'/home/{username}/.ssh'
 
@@ -170,7 +172,6 @@ def create_user_profile(username):
     :param username: string
     :return: None
     """
-    from django.conf import settings
 
     if username in settings.USERNAME_EXCLUDE_LIST:
         return
@@ -188,7 +189,6 @@ def delete_user_profile(username):
     :param username: string
     :return: None
     """
-    from django.conf import settings
 
     if username in settings.USERNAME_EXCLUDE_LIST:
         return

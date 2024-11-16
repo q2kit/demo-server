@@ -1,13 +1,14 @@
-from collections.abc import Callable, Sequence
 from typing import Any
+from collections.abc import Callable, Sequence
+
 from django.contrib import admin
 from django.http.request import HttpRequest
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
 from django.utils.translation import gettext_lazy as _
 
-from .models import Project
-from .forms import ProjectForm, ProjectFormSuperUser
+from src.models import Project
+from src.forms import ProjectForm, ProjectFormSuperUser
 
 
 @admin.register(Project)
