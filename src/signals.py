@@ -1,10 +1,9 @@
-from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
-from django.contrib.auth.models import User
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.dispatch import receiver
+from django.db.models.signals import post_save, post_delete
 
-from .funks import (
+from src.funks import (
     create_user_profile,
     delete_user_profile,
     gen_502_page,
@@ -12,7 +11,7 @@ from .funks import (
     remove_502_page,
     remove_nginx_conf,
 )
-from .models import Project
+from src.models import Project
 
 
 @receiver(post_save, sender=User)

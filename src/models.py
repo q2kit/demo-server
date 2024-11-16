@@ -1,14 +1,14 @@
-from django.db import models
+import threading
+
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.db import models
 
-from .funks import (
+from src.funks import (
     gen_secret,
     gen_nginx_conf,
     gen_default_nginx_conf as reset_default_nginx_conf,
 )
-
-import threading
 
 
 class Project(models.Model):

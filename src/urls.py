@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from .views import (
+from src.views import (
     signup,
     get_connection_info,
     get_key_file,

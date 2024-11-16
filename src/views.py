@@ -10,13 +10,13 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 
-from .models import Project
-from .funks import (
+from src.models import Project
+from src.funks import (
     get_available_port as get_available_port_funk,
     gen_key_pair,
     remove_key_pair,
 )
-from .forms import RegistrationForm
+from src.forms import RegistrationForm
 
 
 @csrf_exempt
