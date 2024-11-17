@@ -64,8 +64,9 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
           ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} '
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/demos:latest && \
             docker rm -f demos || true && \
+            docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/demos:latest || true && \
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/demos:latest && \
             docker run -d \
               --name demos \
               -p 127.0.0.1:18443:80 \
