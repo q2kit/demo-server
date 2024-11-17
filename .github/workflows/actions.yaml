@@ -75,5 +75,6 @@ jobs:
               -v /srv/demos/nginx/logs:/var/log/nginx \
               -v /srv/demos/logs:/srv/demos/logs \
               ${{ secrets.DOCKERHUB_USERNAME }}/demos:latest && \
+            docker exec demos python manage.py migrate && \
             docker exec demos python manage.py generate_config
           '
