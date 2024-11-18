@@ -49,7 +49,7 @@ class ProjectAdmin(admin.ModelAdmin):
                 return ('domain',)
 
     def get_queryset(self, request: HttpRequest) -> Any:
-        qs = super().get_queryset(request)
+        qs = super().get_queryset(request).select_related("user").filter(user__is_active=True)
         if request.user.is_superuser:
             return qs
         return qs.filter(user=request.user)
