@@ -70,7 +70,7 @@ jobs:
             docker run -d \
               --name demos \
               -p 127.0.0.1:18443:80 \
-              -p 2222:22 \
+              -p 0.0.0.0:2222:22 \
               -v /srv/demos/db.sqlite3:/srv/demos/db.sqlite3 \
               -v /srv/demos/.env:/srv/demos/.env \
               -v /srv/demos/nginx/logs:/var/log/nginx \
