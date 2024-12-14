@@ -3,11 +3,23 @@
 
 {% block extrastyle %}{{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/signup.css" %}">
-<script type="text/javascript" src="{% static "admin/js/register.js" %}"></script>
 {{ form.media }}
 {% endblock %}
 
-{% block bodyclass %}register{% endblock %}
+{% block title %}SignUp | DEMOS{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+  <a href="{% url 'admin:index' %}">
+    DEMOS
+  </a>
+</h1>
+{% if user.is_anonymous %}
+  {% include "admin/color_theme_toggle.html" %}
+{% endif %}
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }}register{% endblock %}
 
 {% block usertools %}{% endblock %}
 
