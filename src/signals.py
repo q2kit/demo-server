@@ -1,7 +1,7 @@
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
-from django.db.models.signals import post_save, post_delete
 
 from src.funks import (
     create_user_profile,
@@ -15,7 +15,7 @@ from src.models import Project
 
 
 @receiver(post_save, sender=User)
-def create_user_profile_signal(sender, instance, created, **kwargs):  # noqa: U100
+def create_user_profile_signal(_sender, instance, created, **_kwargs):
     if created:
         create_user_profile(instance.username)
 
@@ -37,17 +37,17 @@ def create_user_profile_signal(sender, instance, created, **kwargs):  # noqa: U1
 
 
 @receiver(post_delete, sender=User)
-def delete_user_profile_signal(sender, instance, **kwargs):  # noqa: U100
+def delete_user_profile_signal(_sender, instance, **_kwargs):
     delete_user_profile(instance.username)
 
 
 @receiver(post_save, sender=Project)
-def save_project_signal(sender, instance, created, **kwargs):  # noqa: U100
+def save_project_signal(_sender, instance, _created, **_kwargs):
     gen_502_page(instance.domain)
     gen_default_nginx_conf(instance.domain)
 
 
 @receiver(post_delete, sender=Project)
-def delete_project_signal(sender, instance, **kwargs):  # noqa: U100
+def delete_project_signal(_sender, instance, **_kwargs):
     remove_502_page(instance.domain)
     remove_nginx_conf(instance.domain)

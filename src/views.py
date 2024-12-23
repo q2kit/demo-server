@@ -1,22 +1,15 @@
-from django.http import (
-    JsonResponse,
-    Http404,
-    FileResponse,
-    HttpRequest,
-)
-from django.views.decorators.csrf import csrf_exempt
-from django.core.cache import cache
 from django.contrib.auth import login
-from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.core.cache import cache
+from django.http import FileResponse, Http404, HttpRequest, JsonResponse
+from django.shortcuts import redirect, render
+from django.views.decorators.csrf import csrf_exempt
 
-from src.models import Project
-from src.funks import (
-    get_available_port as get_available_port_funk,
-    gen_key_pair,
-    remove_key_pair,
-)
 from src.forms import RegistrationForm
+from src.funks import gen_key_pair
+from src.funks import get_available_port as get_available_port_funk
+from src.funks import remove_key_pair
+from src.models import Project
 
 
 @csrf_exempt
@@ -31,10 +24,12 @@ def get_connection_info(request: HttpRequest) -> JsonResponse:
     except Project.DoesNotExist:
         raise Http404
 
-    return JsonResponse({
-        'user': project.user.username,
-        'port': get_available_port_funk(project.id),
-    })
+    return JsonResponse(
+        {
+            'user': project.user.username,
+            'port': get_available_port_funk(project.id),
+        }
+    )
 
 
 @csrf_exempt
@@ -45,20 +40,23 @@ def get_key_file(request: HttpRequest) -> FileResponse:
     """
     if request.method == 'POST':
         domain = request.POST.get('domain')
-        secret = request.POST.get('secret')
+        secret_key = request.POST.get('secret_key')
 
         try:
             project = Project.objects.get(domain=domain)
         except Project.DoesNotExist:
             return JsonResponse({'error': 'Project not found'}, status=404)
 
-        if project.secret != secret:
-            return JsonResponse({'error': 'Invalid secret'}, status=403)
+        if project.secret_key != secret_key:
+            return JsonResponse({'error': 'Invalid secret_key'}, status=403)
 
         _, private_key_path = gen_key_pair(project.user.username)
 
         import threading
-        threading.Timer(60, remove_key_pair, args=(project.user.username,)).start()  # noqa
+
+        threading.Timer(
+            60, remove_key_pair, args=(project.user.username,)
+        ).start()  # noqa
 
         return FileResponse(open(private_key_path, 'rb'))  # noqa: SIM115
     else:
@@ -69,35 +67,34 @@ def get_key_file(request: HttpRequest) -> FileResponse:
 def connect(request):
     if request.method == 'POST':
         domain = request.POST.get('domain')
-        secret = request.POST.get('secret')
+        secret_key = request.POST.get('secret_key')
         port = request.POST.get('port')
 
         try:
             project = Project.objects.get(domain=domain)
         except Project.DoesNotExist:
-            return JsonResponse({
-                'success': False,
-                'error': 'Project not found'
-            }, status=404)
+            return JsonResponse(
+                {'success': False, 'error': 'Project not found'}, status=404
+            )
 
-        if project.secret != secret:
-            return JsonResponse({
-                'success': False,
-                'error': 'Invalid secret'
-            }, status=403)
+        if project.secret_key != secret_key:
+            return JsonResponse(
+                {'success': False, 'error': 'Invalid secret_key'}, status=403
+            )
 
         if cache.get(port) != project.id:
-            return JsonResponse({
-                'success': False,
-                'error': 'Port not available'
-            }, status=409)
+            return JsonResponse(
+                {'success': False, 'error': 'Port not available'}, status=409
+            )
 
         cache.delete(port)
         project.connect(port)
 
-        return JsonResponse({
-            'success': True,
-        })
+        return JsonResponse(
+            {
+                'success': True,
+            }
+        )
 
     else:
         raise Http404
@@ -107,21 +104,23 @@ def connect(request):
 def disconnect(request):
     if request.method == 'POST':
         domain = request.POST.get('domain')
-        secret = request.POST.get('secret')
+        secret_key = request.POST.get('secret_key')
 
         try:
             project = Project.objects.get(domain=domain)
         except Project.DoesNotExist:
             return JsonResponse({'error': 'Project not found'}, status=404)
 
-        if project.secret != secret:
-            return JsonResponse({'error': 'Invalid secret'}, status=403)
+        if project.secret_key != secret_key:
+            return JsonResponse({'error': 'Invalid secret_key'}, status=403)
 
         project.disconnect()
 
-        return JsonResponse({
-            'success': True,
-        })
+        return JsonResponse(
+            {
+                'success': True,
+            }
+        )
 
     else:
         raise Http404
@@ -132,9 +131,11 @@ def keep_alive_connection(request):
     try:
         project = Project.objects.get(domain=domain)
         project.keep_alive_connection()
-        return JsonResponse({
-            'success': True,
-        })
+        return JsonResponse(
+            {
+                'success': True,
+            }
+        )
     except Project.DoesNotExist:
         raise Http404
 

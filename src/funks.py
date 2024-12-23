@@ -1,13 +1,15 @@
 import os
-import jinja2
 import re
-import rsa
 import secrets
 import socket
 
+import jinja2
+import rsa
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+
+from src.env import HTTP_HOST
 
 
 def domain_validator(domain):
@@ -17,28 +19,29 @@ def domain_validator(domain):
     :return: True if valid, False if not
     """
 
-    HTTP_HOST = os.getenv('HTTP_HOST')
     postfix = f'.{HTTP_HOST}'
 
     if not domain.endswith(postfix):
-        raise ValidationError({
-            'domain': f'Invalid domain. Must end with {postfix}'
-        })
+        raise ValidationError(
+            {'domain': f'Invalid domain. Must end with {postfix}'}
+        )
 
     subdomain = domain.replace(postfix, '')
 
     # min: 2, max: 63, a-z, 0-9, -, no leading or trailing -
     if not re.match(r'^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$', subdomain):
-        raise ValidationError({
-            'domain': 'Invalid subdomain. Must be between 2 and 63 characters long, '  # noqa
-                      'contain only lowercase letters, numbers, and hyphens, '  # noqa
-                      'and start and end with a letter or number.'
-        })
+        raise ValidationError(
+            {
+                'domain': 'Invalid subdomain. Must be between 2 and 63 characters long, '  # noqa
+                'contain only lowercase letters, numbers, and hyphens, '  # noqa
+                'and start and end with a letter or number.'
+            }
+        )
 
 
-def gen_secret():
+def gen_secret_key():
     """
-    Generates a secret string
+    Generates a secret_key string
     :return: string
     """
 
@@ -107,10 +110,7 @@ def gen_502_page(domain):
     with open(TPL_PATH, 'r') as f:
         tpl_str = f.read()
     tpl = jinja2.Template(tpl_str)
-    conf_str = tpl.render(
-        domain=domain,
-        HOST=os.getenv('HTTP_HOST')
-    )
+    conf_str = tpl.render(domain=domain, HOST=HTTP_HOST)
     if not os.path.exists('/var/www/demos/502'):
         os.makedirs('/var/www/demos/502')
     with open(f'/var/www/demos/502/{domain}.html', 'w') as f:

@@ -1,6 +1,6 @@
-from django.utils.deprecation import MiddlewareMixin
 from django.core.exceptions import DisallowedHost
 from django.http import HttpResponse
+from django.utils.deprecation import MiddlewareMixin
 
 
 class DisallowedHostMiddleware(MiddlewareMixin):

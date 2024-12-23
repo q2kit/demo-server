@@ -1,0 +1,20 @@
+[tool.black]
+line-length = 79
+skip-string-normalization = true
+exclude = "venv"
+
+[tool.isort]
+line_length = 79
+multi_line_output = 3
+include_trailing_comma = true
+profile = "black"
+
+[tool.flake8]
+max-line-length = 79
+exclude = ".git,__pycache__,venv,.github"
+extend-ignore = "U101"
+
+[tool.mypy]
+python_version = "3.12"
+disable_error_code = "assignment,arg-type"
+exclude = "(venv|.github)"

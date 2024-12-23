@@ -10,11 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-import dotenv
 import os
 from pathlib import Path
 
-dotenv.load_dotenv()
+from src.env import HTTP_HOST
+from src.env import SECRET_KEY as ENV_SECRET_KEY
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,17 +24,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = ENV_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [f"{os.environ['HTTP_HOST']}"]
+ALLOWED_HOSTS = [HTTP_HOST]
 
 CSRF_TRUSTED_ORIGINS = [
-    f"http://{os.environ['HTTP_HOST']}",
-    f"https://{os.environ['HTTP_HOST']}",
-    f"http://{os.environ['HTTP_HOST']}:18443",
+    f"http://{HTTP_HOST}",
+    f"https://{HTTP_HOST}",
+    f"http://{HTTP_HOST}:18443",
 ]
 
 # Application definition
@@ -171,9 +171,7 @@ if not os.path.exists(LOGGING_DIR):
     os.makedirs(LOGGING_DIR)
 
 # List of urls that will not be logged
-LOGGING_EXCEPT_URL_NAME_LIST = (
-    'jsi18n',
-)
+LOGGING_EXCEPT_URL_NAME_LIST = ('jsi18n',)
 
 LOGGING = {
     "version": 1,

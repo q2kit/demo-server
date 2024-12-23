@@ -1,15 +1,17 @@
 import logging
-from ipware import get_client_ip
 
-from django.utils.deprecation import MiddlewareMixin
 from django.conf import settings
 from django.urls import resolve
+from django.utils.deprecation import MiddlewareMixin
+from ipware import get_client_ip
 
 
 class RequestLoggerMiddleware(MiddlewareMixin):
     def process_request(self, request):
         if hasattr(settings, "LOGGING_EXCEPT_URL_NAME_LIST"):
-            LOGGING_EXCEPT_URL_NAME_LIST = settings.LOGGING_EXCEPT_URL_NAME_LIST
+            LOGGING_EXCEPT_URL_NAME_LIST = (
+                settings.LOGGING_EXCEPT_URL_NAME_LIST
+            )
         else:
             LOGGING_EXCEPT_URL_NAME_LIST = ()
 
@@ -31,7 +33,9 @@ class RequestLoggerMiddleware(MiddlewareMixin):
 
     def process_exception(self, request, exception):
         if hasattr(settings, "LOGGING_EXCEPT_URL_NAME_LIST"):
-            LOGGING_EXCEPT_URL_NAME_LIST = settings.LOGGING_EXCEPT_URL_NAME_LIST
+            LOGGING_EXCEPT_URL_NAME_LIST = (
+                settings.LOGGING_EXCEPT_URL_NAME_LIST
+            )
         else:
             LOGGING_EXCEPT_URL_NAME_LIST = ()
 

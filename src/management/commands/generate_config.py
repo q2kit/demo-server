@@ -1,9 +1,8 @@
-import os
-
 from django.core.management.base import BaseCommand
 
-from src.models import Project, User
+from src.env import HTTP_HOST
 from src.funks import create_user_profile, gen_502_page, gen_default_nginx_conf
+from src.models import Project, User
 
 
 class Command(BaseCommand):
@@ -20,7 +19,6 @@ class Command(BaseCommand):
                 print("User: ", user.username)
 
         # Create project's config
-        HTTP_HOST = os.getenv('HTTP_HOST')
         for project in Project.objects.all():
             try:
                 subdomain = project.domain.split('.')[0]
