@@ -1,3 +1,4 @@
+import logging
 import threading
 from datetime import datetime
 
@@ -43,9 +44,12 @@ class Project(models.Model):
 
         self.last_connected_at = now()
         self.save(update_fields=["last_connected_at"])
+        logging.info(f"Project {self.domain} connected")
 
     def disconnect(self) -> None:
         reset_default_nginx_conf(self.domain)
+        cache.delete(self.domain)
+        logging.info(f"Project {self.domain} disconnected")
 
     def keep_alive_connection(self) -> None:
         cache.set(self.domain, True, KEEP_ALIVE_TIMEOUT)
