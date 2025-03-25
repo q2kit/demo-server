@@ -32,6 +32,9 @@ class Project(models.Model):
         return self.domain
 
     def connect(self, port: int) -> None:
+        self.last_connected_at = now()
+        self.save(update_fields=["last_connected_at"])
+
         gen_nginx_conf(self.domain, port)
         cache.set(self.domain, True, KEEP_ALIVE_TIMEOUT)
 
@@ -42,8 +45,6 @@ class Project(models.Model):
 
         threading.Timer(KEEP_ALIVE_TIMEOUT, disconnect_task).start()
 
-        self.last_connected_at = now()
-        self.save(update_fields=["last_connected_at"])
         logging.info(f"Project {self.domain} connected")
 
     def disconnect(self) -> None:
