@@ -126,6 +126,7 @@ def disconnect(request):
         raise Http404
 
 
+@csrf_exempt
 def keep_alive_connection(request):
     domain = request.POST.get('domain')
     try:
