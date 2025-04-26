@@ -103,7 +103,7 @@ def get_list_env(
 
 HTTP_HOST = get_env('HTTP_HOST')
 SECRET_KEY = get_env('SECRET_KEY')
-KEEP_ALIVE_TIMEOUT = get_int_env('KEEP_ALIVE_TIMEOUT', 1800)
+KEEP_ALIVE_TIMEOUT = get_int_env('KEEP_ALIVE_TIMEOUT', 300)
 
 
 __all__ = [
