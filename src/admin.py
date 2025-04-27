@@ -121,8 +121,7 @@ class CustomUserAdmin(UserAdmin):
     list_display = (
         "username",
         "email",
-        "first_name",
-        "last_name",
+        "project_count",
         "is_staff",
         "is_active",
     )
@@ -151,6 +150,7 @@ class CustomUserAdmin(UserAdmin):
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
     inlines = [ProjectInline]
+    list_filter = ("is_staff", "is_active")
 
     def get_queryset(self, request: HttpRequest) -> Any:
         qs = super().get_queryset(request)
@@ -163,3 +163,6 @@ class CustomUserAdmin(UserAdmin):
         if obj:
             res += ('username',)
         return res
+
+    def project_count(self, obj: Any) -> int:
+        return obj.projects.count()
