@@ -99,19 +99,27 @@ class ProjectInline(admin.TabularInline):
     extra = 0
     fields = (
         "domain",
-        "secret_key",
         "created_at",
         "updated_at",
         "last_connected_at",
     )
-    readonly_fields = ("created_at", "updated_at", "last_connected_at")
+    readonly_fields = (
+        "domain",
+        "created_at",
+        "updated_at",
+        "last_connected_at",
+    )
     can_delete = False
+    show_change_link = True
 
     def get_queryset(self, request: HttpRequest):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
         return qs.filter(user=request.user)
+
+    def has_add_permission(self, request, obj=None):  # noqa
+        return False
 
 
 class IsGhostUserFilter(SimpleListFilter):
