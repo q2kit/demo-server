@@ -2,8 +2,10 @@ from collections.abc import Callable, Sequence
 from typing import Any
 
 from django.contrib import admin
+from django.contrib.admin import SimpleListFilter
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group, User
+from django.db.models import Count
 from django.http.request import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
@@ -112,6 +114,28 @@ class ProjectInline(admin.TabularInline):
         return qs.filter(user=request.user)
 
 
+class IsGhostUserFilter(SimpleListFilter):
+    title = _('ghost user')
+    parameter_name = 'is_ghost_user'
+
+    def lookups(self, request, model_admin):  # noqa
+        return (
+            ('1', _('Yes')),
+            ('0', _('No')),
+        )
+
+    def queryset(self, request, queryset):  # noqa
+        if self.value() == '1':
+            return queryset.annotate(projects_count=Count('projects')).filter(
+                projects_count=0
+            )
+        if self.value() == '0':
+            return queryset.annotate(projects_count=Count('projects')).filter(
+                projects_count__gt=0
+            )
+        return queryset
+
+
 admin.site.unregister(User)
 admin.site.unregister(Group)
 
@@ -121,8 +145,8 @@ class CustomUserAdmin(UserAdmin):
     list_display = (
         "username",
         "email",
-        "project_count",
-        "is_staff",
+        "projects_count",
+        "is_superuser",
         "is_active",
     )
     fieldsets = (
@@ -150,11 +174,15 @@ class CustomUserAdmin(UserAdmin):
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
     inlines = [ProjectInline]
-    list_filter = ("is_staff", "is_active")
+    list_filter = ("is_superuser", "is_active", IsGhostUserFilter)
 
     def get_queryset(self, request: HttpRequest) -> Any:
-        qs = super().get_queryset(request)
-        return qs.filter(is_superuser=False)
+        return (
+            super()
+            .get_queryset(request)
+            .annotate(projects_count=Count('projects'))
+            .filter(is_superuser=False)
+        )
 
     def get_readonly_fields(
         self, request: HttpRequest, obj: Any | None = ...
@@ -164,5 +192,6 @@ class CustomUserAdmin(UserAdmin):
             res += ('username',)
         return res
 
-    def project_count(self, obj: Any) -> int:
-        return obj.projects.count()
+    @admin.display(description=_("Projects count"), ordering='projects_count')
+    def projects_count(self, obj: Any) -> int:
+        return obj.projects_count
