@@ -21,7 +21,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import path
 
-from src.forms import AuthenticationForm
+from src.forms import AdminAuthenticationForm
 from src.views import (
     connect,
     disconnect,
@@ -41,7 +41,7 @@ urlpatterns = [
     path(
         'admin/login/',
         LoginView.as_view(
-            authentication_form=AuthenticationForm,
+            authentication_form=AdminAuthenticationForm,
             template_name='admin/login.html',
         ),
         name='login',

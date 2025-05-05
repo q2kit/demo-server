@@ -62,6 +62,7 @@
       {{ field.label_tag }}
       <div class="{% if field.errors %}field-error{% endif %}">{{ field }}</div>
       {{ field.errors }}
+      {{ field.help_text }}
     </div>
   {% endfor %}
   <div class="login-link">

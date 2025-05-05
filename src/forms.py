@@ -1,9 +1,9 @@
 from django import forms
 from django.contrib.admin import widgets
-from django.contrib.admin.sites import site as admin_site
-from django.contrib.auth.forms import (
-    AuthenticationForm as BaseAuthenticationForm,
+from django.contrib.admin.forms import (
+    AdminAuthenticationForm as BaseAdminAuthenticationForm,
 )
+from django.contrib.admin.sites import site as admin_site
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -58,8 +58,9 @@ class ProjectFormSuperUser(ProjectForm):
         )
 
 
-class AuthenticationForm(BaseAuthenticationForm):
+class AdminAuthenticationForm(BaseAdminAuthenticationForm):
     error_messages = {
+        **BaseAdminAuthenticationForm.error_messages,
         "invalid_login": _("Please enter a correct username and password."),
         "inactive": _("This account is inactive."),
     }
@@ -72,3 +73,9 @@ class UserCreationForm(BaseUserCreationForm):
             return username_validator(username) if username else None
         except ValidationError as e:
             self._update_errors(e)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].help_text = _(
+            "Must be between 2 and 24 characters long, contain only letters and numbers, and start with a letter"  # noqa
+        )
