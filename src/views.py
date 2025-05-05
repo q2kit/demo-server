@@ -5,10 +5,8 @@ from django.http import FileResponse, Http404, HttpRequest, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
-from src.forms import RegistrationForm
-from src.funks import gen_key_pair
-from src.funks import get_available_port as get_available_port_funk
-from src.funks import remove_key_pair
+from src.forms import UserCreationForm
+from src.funks import gen_key_pair, get_available_port, remove_key_pair
 from src.models import Project
 
 
@@ -27,7 +25,7 @@ def get_connection_info(request: HttpRequest) -> JsonResponse:
     return JsonResponse(
         {
             'user': project.user.username,
-            'port': get_available_port_funk(project.id),
+            'port': get_available_port(project.id),
         }
     )
 
@@ -143,18 +141,18 @@ def keep_alive_connection(request):
 
 def signup(request):
     if request.method == "POST":
-        form = RegistrationForm(request.POST)
+        form = UserCreationForm(request.POST)
         if form.is_valid():
             user = User.objects.create_user(
                 username=form.cleaned_data["username"],
-                password=form.cleaned_data["password"],
+                password=form.cleaned_data["password1"],
                 is_active=True,
                 is_staff=True,
             )
             login(request, user)
             return redirect("admin:index")
     else:
-        form = RegistrationForm()
+        form = UserCreationForm()
 
     return render(
         request,

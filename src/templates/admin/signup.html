@@ -60,7 +60,7 @@
   {% for field in form %}
     <div class="form-row">
       {{ field.label_tag }}
-      {{ field }}
+      <div class="{% if field.errors %}field-error{% endif %}">{{ field }}</div>
       {{ field.errors }}
     </div>
   {% endfor %}
@@ -70,23 +70,15 @@
   <div class="submit-row">
     <input type="submit" value="Sign Up">
   </div>
-  {% for field in form %}
-    {% with break_loop=False %}
-    {% endwith %}
-    {% if field.errors and not break_loop %}
-
-      <script>
-        document.addEventListener("DOMContentLoaded", function(event) {
-          {% if field == form.password2 %}
-            document.getElementById("{{ form.password.id_for_label }}").focus();
-          {% else %}  
-            document.getElementById("{{ field.id_for_label }}").focus();
-          {% endif %}
-        });
-      </script>
-      {% with break_loop=True %}
-      {% endwith %}
-    {% endif %}
-  {% endfor %}
+  <script>
+    var errorInput = document.querySelector(".field-error>input");
+    if (errorInput) {
+      if (errorInput.id == "{{ form.password2.id_for_label }}") {
+        document.getElementById("{{ form.password1.id_for_label }}").focus();
+      } else {
+        errorInput.focus();
+      }
+    }
+  </script>
 </form>
 {% endblock %}

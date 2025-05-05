@@ -9,7 +9,7 @@ from django.db.models import Count
 from django.http.request import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
-from src.forms import ProjectForm, ProjectFormSuperUser
+from src.forms import ProjectForm, ProjectFormSuperUser, UserCreationForm
 from src.models import Project
 
 
@@ -150,6 +150,7 @@ admin.site.unregister(Group)
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
+    add_form = UserCreationForm
     list_display = (
         "username",
         "email",
@@ -203,3 +204,8 @@ class CustomUserAdmin(UserAdmin):
     @admin.display(description=_("Projects count"), ordering='projects_count')
     def projects_count(self, obj: Any) -> int:
         return obj.projects_count
+
+    def get_inline_instances(self, request, obj=None):
+        if obj is None:
+            return []
+        return super().get_inline_instances(request, obj)

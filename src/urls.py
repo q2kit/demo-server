@@ -16,10 +16,12 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import path
 
+from src.forms import AuthenticationForm
 from src.views import (
     connect,
     disconnect,
@@ -36,6 +38,14 @@ admin.site.site_url = None
 
 urlpatterns = [
     path('health', lambda _: HttpResponse('OK')),
+    path(
+        'admin/login/',
+        LoginView.as_view(
+            authentication_form=AuthenticationForm,
+            template_name='admin/login.html',
+        ),
+        name='login',
+    ),
     path('admin/signup/', signup, name='signup'),
     path('admin/', admin.site.urls),
     path('get_connection_info/', get_connection_info),

@@ -25,3 +25,7 @@ msgstr "người dùng ma"
 #: admin.py:194
 msgid "Projects count"
 msgstr "Số lượng dự án"
+
+#: admin.py:194
+msgid "This username is not allowed."
+msgstr "Không được phép sử dụng tên người dùng này."

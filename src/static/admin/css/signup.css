@@ -46,7 +46,7 @@
 }
 
 .register .form-row #id_username,
-.register .form-row #id_password,
+.register .form-row #id_password1,
 .register .form-row #id_password2,
 .register .form-row #id_email {
     padding: 8px;
