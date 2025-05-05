@@ -6,8 +6,10 @@ import socket
 import jinja2
 import rsa
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from src.env import HTTP_HOST
 
@@ -37,6 +39,8 @@ def domain_validator(domain):
                 'and start and end with a letter or number.'
             }
         )
+
+    return domain.lower()
 
 
 def gen_secret_key():
@@ -228,3 +232,34 @@ def remove_sshd_conf(username):
         os.system('service ssh reload')
     except FileNotFoundError:
         pass
+
+
+def username_validator(username):
+    """
+    Validates username string
+    :param username: string
+    :return: True if valid, False if not
+    """
+
+    if (
+        username
+        and get_user_model().objects.filter(username__iexact=username).exists()
+    ):  # noqa
+        raise ValidationError(
+            {
+                "username": _("This username is already in use."),
+            }
+        )
+    if username in settings.USERNAME_EXCLUDE_LIST:
+        raise ValidationError({"username": _("This username is not allowed.")})
+
+    if not re.match(r'^[a-zA-Z][a-zA-Z0-9]{1,23}$', username):
+        raise ValidationError(
+            {
+                "username": _(
+                    "Invalid username. Must be between 2 and 24 characters long, "  # noqa
+                    "contain only letters and numbers, and start with a letter."  # noqa
+                ),
+            }
+        )
+    return username.lower()

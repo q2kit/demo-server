@@ -151,7 +151,7 @@ STATIC_ROOT = "/var/www/demos/static/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-USERNAME_EXCLUDE_LIST = (
+USERNAME_EXCLUDE_LIST = {
     'admin',
     'root',
     'user',
@@ -164,7 +164,7 @@ USERNAME_EXCLUDE_LIST = (
     'bin',
     'sys',
     'sync',
-)
+}
 
 LOGOUT_REDIRECT_URL = "/"
 
