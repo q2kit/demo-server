@@ -62,7 +62,9 @@ class ProjectFormSuperUser(ProjectForm):
 
     def clean_user(self):
         user = self.cleaned_data['user']
-        if not user.is_active and user != self.instance.user:
+        if not user.is_active and (
+            not hasattr(self.instance, 'user') or user != self.instance.user
+        ):
             raise ValidationError(_("This user is inactive."))
 
         return user
