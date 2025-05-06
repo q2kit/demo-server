@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from src.env import HTTP_HOST
 from src.funks import domain_validator, username_validator
 from src.models import Project
+from src.widgets import UserSelect
 
 
 class ProjectForm(forms.ModelForm):
@@ -19,7 +20,7 @@ class ProjectForm(forms.ModelForm):
         fields = ['domain']
         error_messages = {
             'domain': {
-                'unique': "This domain is already in use.",
+                'unique': _("This domain is already in use."),
             }
         }
 
@@ -41,14 +42,16 @@ class ProjectFormSuperUser(ProjectForm):
         fields = ['domain', 'user']
         error_messages = {
             'domain': {
-                'unique': "This domain is already in use.",
+                'unique': _("This domain is already in use."),
             }
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['user'].widget = widgets.RelatedFieldWidgetWrapper(
-            self.fields['user'].widget,
+            UserSelect(
+                choices=self.fields['user'].choices,
+            ),
             Project._meta.get_field('user').remote_field,
             admin_site,
             can_add_related=True,
@@ -56,6 +59,13 @@ class ProjectFormSuperUser(ProjectForm):
             can_delete_related=True,
             can_view_related=True,
         )
+
+    def clean_user(self):
+        user = self.cleaned_data['user']
+        if not user.is_active and user != self.instance.user:
+            raise ValidationError(_("This user is inactive."))
+
+        return user
 
 
 class AdminAuthenticationForm(BaseAdminAuthenticationForm):

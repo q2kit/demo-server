@@ -17,10 +17,7 @@ class Project(models.Model):
     user: User = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        limit_choices_to={
-            "is_superuser": False,
-            "is_active": True,
-        },
+        limit_choices_to={"is_superuser": False},
         related_name="projects",
     )
     secret_key: str = models.CharField(max_length=255, default=gen_secret_key)
