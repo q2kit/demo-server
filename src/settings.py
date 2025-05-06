@@ -185,11 +185,11 @@ LOGGING = {
     "handlers": {
         "file": {
             "level": "DEBUG",
-            "class": "logging.handlers.RotatingFileHandler",
+            "class": "concurrent_log_handler.ConcurrentRotatingFileHandler",
             "formatter": "file",
             "filename": os.path.join(LOGGING_DIR, "request.log"),
-            "maxBytes": 1024 * 1024 * 0.1,  # 0.1 MB per file
-            "backupCount": 5,
+            "maxBytes": 100 * 1000,  # 0.1MB
+            "backupCount": 12,
             "encoding": "utf8",
             "delay": False,
             "mode": "a",
