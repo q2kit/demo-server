@@ -13,10 +13,53 @@ from src.forms import ProjectForm, ProjectFormSuperUser, UserCreationForm
 from src.models import Project
 
 
+class SuperAdminFilter(SimpleListFilter):
+    def __init__(self, request, params, model, model_admin):
+        super().__init__(request, params, model, model_admin)
+        if not request.user.is_superuser:
+            self.lookup_choices = []
+
+
+class ActiveUserFilter(SuperAdminFilter):
+    title = _('active user')
+    parameter_name = 'is_user_active'
+
+    def lookups(self, request, model_admin):  # noqa: U100
+        return (
+            ('1', _('Yes')),
+            ('0', _('No')),
+        )
+
+    def queryset(self, request, queryset):  # noqa: U100
+        if self.value() == '1':
+            return queryset.filter(user__is_active=True)
+        if self.value() == '0':
+            return queryset.filter(user__is_active=False)
+        return queryset
+
+
+class UserHasProjectsFilter(SuperAdminFilter):
+    title = _('user')
+    parameter_name = 'user'
+
+    def lookups(self, request, model_admin):  # noqa: U100
+        return (
+            User.objects.annotate(projects_count=Count('projects'))
+            .filter(projects_count__gt=0)
+            .values_list('id', 'username')
+        )
+
+    def queryset(self, request, queryset):  # noqa: U100
+        if self.value():
+            return queryset.filter(user=self.value())
+        return queryset
+
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     search_fields = ('domain', 'user__username')
     list_display_links = ('domain',)
+    list_filter = (UserHasProjectsFilter, ActiveUserFilter)
 
     def get_readonly_fields(
         self, request: HttpRequest, obj: Any | None = ...
@@ -74,12 +117,7 @@ class ProjectAdmin(admin.ModelAdmin):
                 return ('domain',)
 
     def get_queryset(self, request: HttpRequest) -> Any:
-        qs = (
-            super()
-            .get_queryset(request)
-            .select_related("user")
-            .filter(user__is_active=True)
-        )
+        qs = super().get_queryset(request).select_related("user")
         if request.user.is_superuser:
             return qs
         return qs.filter(user=request.user)
@@ -122,7 +160,7 @@ class ProjectInline(admin.TabularInline):
         return False
 
 
-class IsGhostUserFilter(SimpleListFilter):
+class IsGhostUserFilter(SuperAdminFilter):
     title = _('ghost user')
     parameter_name = 'is_ghost_user'
 
@@ -155,7 +193,6 @@ class CustomUserAdmin(UserAdmin):
         "username",
         "email",
         "projects_count",
-        "is_superuser",
         "is_active",
     )
     fieldsets = (
@@ -183,7 +220,7 @@ class CustomUserAdmin(UserAdmin):
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
     inlines = [ProjectInline]
-    list_filter = ("is_superuser", "is_active", IsGhostUserFilter)
+    list_filter = ("is_active", IsGhostUserFilter)
 
     def get_queryset(self, request: HttpRequest) -> Any:
         return (
