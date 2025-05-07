@@ -1,4 +1,4 @@
-/* register FORM */
+/* REGISTER FORM */
 
 .register {
     background: var(--darkened-bg);
@@ -64,4 +64,64 @@
     text-align: center;
     margin-top: 10px;
     margin-bottom: 5px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+    /* Basic */
+    .register #header {
+        padding: 15px 20px;
+    }
+
+    .register #branding h1 {
+        margin: 0;
+    }
+}
+
+@media (max-width: 767px) {
+    /* Layout */
+    body.register {
+        padding: 0 15px;
+    }
+
+    .register #container {
+        width: auto;
+        max-width: 480px;
+        margin: 25px auto;
+    }
+
+    .register #header,
+    .register #content {
+        padding: 15px;
+    }
+
+    .register #content-main {
+        float: none;
+    }
+
+    .register .form-row {
+        padding: 0;
+    }
+
+    .register .form-row + .form-row {
+        margin-top: 15px;
+    }
+
+    .register .form-row label {
+        margin: 0 0 5px;
+        line-height: 1.2;
+    }
+
+    .register .submit-row {
+        padding: 15px 0 0;
+    }
+
+    .register br {
+        display: none;
+    }
+
+    .register .submit-row input {
+        margin: 0;
+        text-transform: uppercase;
+    }
 }
