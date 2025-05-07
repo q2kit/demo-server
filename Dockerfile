@@ -8,7 +8,7 @@ RUN mkdir /etc/ssh/sshd_config.d/user.d
 COPY nginx.conf /etc/nginx/nginx.conf
 RUN mkdir /etc/nginx/sites
 RUN mkdir -p /var/www/demos/502
-COPY sshd_config.conf /etc/ssh/sshd_config
+COPY sshd_config /etc/ssh/sshd_config
 WORKDIR /srv/demos
 COPY . .
 RUN cp .env.example .env

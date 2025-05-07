@@ -3,7 +3,7 @@ Include /etc/ssh/sshd_config.d/*.conf
 PubkeyAuthentication yes
 PasswordAuthentication no
 KbdInteractiveAuthentication no
-UsePAM no
+UsePAM yes
 AllowTcpForwarding yes
 GatewayPorts yes
 ClientAliveInterval 120
