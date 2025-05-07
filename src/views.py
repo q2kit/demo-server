@@ -1,6 +1,7 @@
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.core.exceptions import PermissionDenied
 from django.http import FileResponse, Http404, HttpRequest, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -159,3 +160,10 @@ def signup(request):
         "admin/signup.html",
         {"form": form},
     )
+
+
+def csrf_failure(request, reason=""):  # noqa: U100
+    """
+    CSRF failure view.
+    """
+    raise PermissionDenied("CSRF token missing or incorrect.")
