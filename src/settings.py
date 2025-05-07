@@ -37,6 +37,8 @@ CSRF_TRUSTED_ORIGINS = [
     f"http://{HTTP_HOST}:18443",
 ]
 
+CSRF_FAILURE_VIEW = "src.views.csrf_failure"
+
 # Application definition
 
 INSTALLED_APPS = [
