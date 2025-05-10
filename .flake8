@@ -1,4 +1,0 @@
-[flake8]
-max-line-length = 97
-exclude = .git,__pycache__,venv,env
-ignore = U101
