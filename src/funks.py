@@ -4,6 +4,7 @@ import secrets
 import socket
 
 import jinja2
+import requests
 import rsa
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -11,7 +12,12 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from src.env import HTTP_HOST
+from src.env import (
+    CLOUDFLARE_API_URL,
+    CLOUDFLARE_SECRET_KEY,
+    CLOUDFLARE_SITE_KEY,
+    HTTP_HOST,
+)
 
 
 def domain_validator(domain):
@@ -263,3 +269,20 @@ def username_validator(username):
             }
         )
     return username.lower()
+
+
+def check_cf_turnstile(turnstile_token):
+    """
+    Checks if the turnstile token is valid
+    :param turnstile_token: string
+    :return: bool
+    """
+    data = {
+        'secret': CLOUDFLARE_SECRET_KEY,
+        'response': turnstile_token,
+        'sitekey': CLOUDFLARE_SITE_KEY,
+    }
+    response = requests.post(CLOUDFLARE_API_URL, data=data)
+    return response.status_code == 200 and response.json().get(
+        'success', False
+    )

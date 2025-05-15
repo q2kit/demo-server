@@ -3,6 +3,7 @@
 
 {% block extrastyle %}{{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/signup.css" %}">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 {{ form.media }}
 {% endblock %}
 
@@ -65,6 +66,7 @@
       {{ field.help_text }}
     </div>
   {% endfor %}
+  <div class="cf-turnstile" data-sitekey="{{ cloudflare_sitekey }}"></div>
   <div class="login-link">
     <a tabindex="-1" href="{% url 'admin:login' %}">Already have an account?</a>
   </div>

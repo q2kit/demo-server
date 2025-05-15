@@ -16,5 +16,5 @@ extend-ignore = "U101"
 
 [tool.mypy]
 python_version = "3.12"
-disable_error_code = "assignment,arg-type"
+disable_error_code = "assignment,arg-type,import-untyped"
 exclude = "(venv|.github)"

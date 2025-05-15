@@ -14,7 +14,9 @@
 {% endif %}
 {% endblock %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "admin/css/login.css" %}">
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" href="{% static "admin/css/login.css" %}">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 {{ form.media }}
 {% endblock %}
 
@@ -69,6 +71,7 @@
   <div style="text-align: center;margin-top: 10px;margin-bottom: 5px;">
     <a tabindex="-1" href="{{ signup_url }}">Don't have an account?</a>
   </div>
+  <div class="cf-turnstile" data-sitekey="{{ cloudflare_sitekey }}"></div>
   {% url 'admin_password_reset' as password_reset_url %}
   {% if password_reset_url %}
   <div class="password-reset-link">

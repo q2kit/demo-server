@@ -1,13 +1,20 @@
 from django.contrib.auth import login
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView as BaseLoginView
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.http import FileResponse, Http404, HttpRequest, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
+from src.env import CLOUDFLARE_SITE_KEY
 from src.forms import UserCreationForm
-from src.funks import gen_key_pair, get_available_port, remove_key_pair
+from src.funks import (
+    check_cf_turnstile,
+    gen_key_pair,
+    get_available_port,
+    remove_key_pair,
+)
 from src.models import Project
 
 
@@ -140,10 +147,33 @@ def keep_alive_connection(request):
         raise Http404
 
 
+class LoginView(BaseLoginView):
+    """
+    Custom login view to handle Turnstile verification.
+    """
+
+    def form_valid(self, form):
+        turnstile_token = self.request.POST.get('cf-turnstile-response')
+        if check_cf_turnstile(turnstile_token):
+            return super().form_valid(form)
+        else:
+            form.add_error(None, "Invalid Turnstile token.")
+            return self.form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        return {
+            **super().get_context_data(**kwargs),
+            'cloudflare_sitekey': CLOUDFLARE_SITE_KEY,
+        }
+
+
 def signup(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
-        if form.is_valid():
+        turnstile_token = request.POST.get('cf-turnstile-response')
+        is_cf_turnstile_valid = check_cf_turnstile(turnstile_token)
+
+        if form.is_valid() and is_cf_turnstile_valid:
             user = User.objects.create_user(
                 username=form.cleaned_data["username"],
                 password=form.cleaned_data["password1"],
@@ -152,14 +182,17 @@ def signup(request):
             )
             login(request, user)
             return redirect("admin:index")
+        elif not is_cf_turnstile_valid:
+            form.add_error(None, "Invalid Turnstile token.")
     else:
         form = UserCreationForm()
 
-    return render(
-        request,
-        "admin/signup.html",
-        {"form": form},
-    )
+    context = {
+        "form": form,
+        "cloudflare_sitekey": CLOUDFLARE_SITE_KEY,
+    }
+
+    return render(request, "admin/signup.html", context)
 
 
 def csrf_failure(request, reason=""):  # noqa: U100
