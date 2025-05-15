@@ -146,6 +146,9 @@ LOCALE_PATHS = [
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'src' / 'static',
+]
 STATIC_ROOT = "/var/www/demos/static/"
 
 # Default primary key field type
