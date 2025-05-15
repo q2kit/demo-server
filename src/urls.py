@@ -16,13 +16,13 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import path
 
 from src.forms import AdminAuthenticationForm
 from src.views import (
+    LoginView,
     connect,
     disconnect,
     get_connection_info,

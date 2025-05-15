@@ -125,3 +125,9 @@
         text-transform: uppercase;
     }
 }
+
+.cf-turnstile {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
