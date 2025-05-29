@@ -157,7 +157,7 @@ class LoginView(BaseLoginView):
         if check_cf_turnstile(turnstile_token):
             return super().form_valid(form)
         else:
-            form.add_error(None, "Invalid Turnstile token.")
+            form.add_error(None, "Are you a robot? Please leave me alone!")
             return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
@@ -183,7 +183,7 @@ def signup(request):
             login(request, user)
             return redirect("admin:index")
         elif not is_cf_turnstile_valid:
-            form.add_error(None, "Invalid Turnstile token.")
+            form.add_error(None, "Are you a robot? Please leave me alone!")
     else:
         form = UserCreationForm()
 
