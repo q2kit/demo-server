@@ -55,7 +55,7 @@ def gen_secret_key():
     :return: string
     """
 
-    return secrets.token_urlsafe(32)
+    return secrets.token_hex(16)
 
 
 def get_available_port(project_id: int):
