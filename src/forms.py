@@ -29,11 +29,7 @@ class ProjectForm(forms.ModelForm):
         self.fields['domain'].initial = f".{HTTP_HOST}"
 
     def clean_domain(self):
-        domain = self.cleaned_data['domain']
-        try:
-            return domain_validator(domain)
-        except ValidationError as e:
-            self._update_errors(e)
+        return domain_validator(self.cleaned_data['domain'])
 
 
 class ProjectFormSuperUser(ProjectForm):

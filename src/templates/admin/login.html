@@ -51,7 +51,7 @@
 {% if user.is_authenticated %}
 <p class="errornote">
 {% blocktranslate trimmed %}
-    You are authenticated as {{ username }}, but are not authorized to
+    You are authenticated as {{ user }}, but are not authorized to
     access this page. Would you like to login to a different account?
 {% endblocktranslate %}
 </p>
@@ -62,22 +62,29 @@
     {{ form.username.errors }}
     {{ form.username.label_tag }} {{ form.username }}
   </div>
+
   <div class="form-row">
     {{ form.password.errors }}
     {{ form.password.label_tag }} {{ form.password }}
     <input type="hidden" name="next" value="{{ next }}">
   </div>
+
   {% url 'signup' as signup_url %}
   <div style="text-align: center;margin-top: 10px;margin-bottom: 5px;">
     <a tabindex="-1" href="{{ signup_url }}">Don't have an account?</a>
   </div>
+
+  {% if cloudflare_sitekey %}
   <div class="cf-turnstile" data-sitekey="{{ cloudflare_sitekey }}"></div>
+  {% endif %}
+
   {% url 'admin_password_reset' as password_reset_url %}
   {% if password_reset_url %}
   <div class="password-reset-link">
     <a href="{{ password_reset_url }}">{% translate 'Forgotten your password or username?' %}</a>
   </div>
   {% endif %}
+
   <div class="submit-row">
     <input type="submit" value="{% translate 'Log in' %}">
   </div>

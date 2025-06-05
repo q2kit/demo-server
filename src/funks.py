@@ -26,27 +26,33 @@ def domain_validator(domain):
     :param subdomain: string
     :return: True if valid, False if not
     """
-
+    domain = domain.strip().lower()
     postfix = f'.{HTTP_HOST}'
 
     if not domain.endswith(postfix):
-        raise ValidationError(
-            {'domain': f'Invalid domain. Must end with {postfix}'}
-        )
+        raise ValidationError(f'Invalid domain. Must end with {postfix}')
 
     subdomain = domain.replace(postfix, '')
+
+    for item in getattr(settings, 'SUBDOMAIN_EXCLUDE_LIST', []):
+        if (
+            subdomain == item
+            or isinstance(item, re.Pattern)
+            and item.match(subdomain)
+        ):
+            raise ValidationError(
+                f'Invalid subdomain. "{subdomain}" is not allowed.'
+            )
 
     # min: 2, max: 63, a-z, 0-9, -, no leading or trailing -
     if not re.match(r'^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$', subdomain):
         raise ValidationError(
-            {
-                'domain': 'Invalid subdomain. Must be between 2 and 63 characters long, '  # noqa
-                'contain only lowercase letters, numbers, and hyphens, '  # noqa
-                'and start and end with a letter or number.'
-            }
+            'Invalid subdomain. Must be between 2 and 63 characters long, '
+            'contain only lowercase letters, numbers, and hyphens, '
+            'and start and end with a letter or number.'
         )
 
-    return domain.lower()
+    return domain
 
 
 def gen_secret_key():
