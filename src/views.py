@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView as BaseLoginView
@@ -8,7 +9,7 @@ from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
 from src.env import CLOUDFLARE_SITE_KEY
-from src.forms import UserCreationForm
+from src.forms import AdminAuthenticationForm, UserCreationForm
 from src.funks import (
     check_cf_turnstile,
     gen_key_pair,
@@ -96,11 +97,7 @@ def connect(request):
         cache.delete(port)
         project.connect(port)
 
-        return JsonResponse(
-            {
-                'success': True,
-            }
-        )
+        return JsonResponse({'success': True})
 
     else:
         raise Http404
@@ -152,7 +149,15 @@ class LoginView(BaseLoginView):
     Custom login view to handle Turnstile verification.
     """
 
+    form_class = AdminAuthenticationForm
+    template_name = 'admin/login.html'
+    redirect_authenticated_user = True
+
     def form_valid(self, form):
+        if settings.DEBUG:
+            # In debug mode, skip Turnstile verification
+            return super().form_valid(form)
+
         turnstile_token = self.request.POST.get('cf-turnstile-response')
         if check_cf_turnstile(turnstile_token):
             return super().form_valid(form)
@@ -161,10 +166,10 @@ class LoginView(BaseLoginView):
             return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
-        return {
-            **super().get_context_data(**kwargs),
-            'cloudflare_sitekey': CLOUDFLARE_SITE_KEY,
-        }
+        context = super().get_context_data(**kwargs)
+        if not settings.DEBUG:
+            context['cloudflare_sitekey'] = CLOUDFLARE_SITE_KEY
+        return context
 
 
 def signup(request):

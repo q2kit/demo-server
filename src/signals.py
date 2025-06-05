@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 
 from src.funks import (
@@ -43,11 +43,14 @@ def delete_user_profile_signal(sender, instance, **kwargs):
     delete_user_profile(instance.username)
 
 
-@receiver(post_save, sender=Project)
+@receiver(pre_save, sender=Project)
 def save_project_signal(sender, instance, created, **kwargs):
-    _ = (sender, created, kwargs)  # unused
-    gen_502_page(instance.domain)
-    gen_default_nginx_conf(instance.domain)
+    _ = (sender, kwargs)  # unused
+    if not created:
+        old_domain = Project.objects.get(id=instance.id).domain
+    if created or old_domain != instance.domain:
+        gen_502_page(instance.domain)
+        gen_default_nginx_conf(instance.domain)
 
 
 @receiver(post_delete, sender=Project)

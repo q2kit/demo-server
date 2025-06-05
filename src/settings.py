@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import re
 from pathlib import Path
 
 from src.env import HTTP_HOST
@@ -31,11 +32,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [HTTP_HOST]
 
-CSRF_TRUSTED_ORIGINS = [
-    f"http://{HTTP_HOST}",
-    f"https://{HTTP_HOST}",
-    f"http://{HTTP_HOST}:18443",
-]
+CSRF_TRUSTED_ORIGINS = [f"https://{HTTP_HOST}"]
 
 CSRF_FAILURE_VIEW = "src.views.csrf_failure"
 
@@ -126,6 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_REDIRECT_URL = 'admin:index'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -169,6 +167,21 @@ USERNAME_EXCLUDE_LIST = {
     'bin',
     'sys',
     'sync',
+}
+
+SUBDOMAIN_EXCLUDE_LIST = {
+    'www',
+    'mail',
+    'ftp',
+    'webmail',
+    'admin',
+    'cpanel',
+    'webdisk',
+    'webmail',
+    re.compile(r'^ns\d+$'),  # ns1, ns2, etc.
+    re.compile(r'^dns\d+$'),  # dns1, dns2, etc.
+    re.compile(r'^mx\d+$'),  # mx1, mx2, etc.
+    re.compile(r'^ftp\d+$'),  # ftp1, ftp2, etc.
 }
 
 LOGOUT_REDIRECT_URL = "/"
