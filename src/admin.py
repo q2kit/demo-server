@@ -211,10 +211,7 @@ class CustomUserAdmin(UserAdmin):
         (
             _("Permissions"),
             {
-                "fields": (
-                    "is_active",
-                    "is_staff",
-                ),
+                "fields": ("is_active",),
             },
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),

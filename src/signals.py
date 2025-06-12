@@ -44,11 +44,11 @@ def delete_user_profile_signal(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=Project)
-def save_project_signal(sender, instance, created, **kwargs):
+def save_project_signal(sender, instance, **kwargs):
     _ = (sender, kwargs)  # unused
-    if not created:
+    if instance.pk:
         old_domain = Project.objects.get(id=instance.id).domain
-    if created or old_domain != instance.domain:
+    if not instance.pk or old_domain != instance.domain:
         gen_502_page(instance.domain)
         gen_default_nginx_conf(instance.domain)
 
