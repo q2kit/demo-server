@@ -178,10 +178,10 @@ SUBDOMAIN_EXCLUDE_LIST = {
     'cpanel',
     'webdisk',
     'webmail',
-    re.compile(r'^ns\d+$'),  # ns1, ns2, etc.
-    re.compile(r'^dns\d+$'),  # dns1, dns2, etc.
-    re.compile(r'^mx\d+$'),  # mx1, mx2, etc.
-    re.compile(r'^ftp\d+$'),  # ftp1, ftp2, etc.
+    re.compile(r'^ns\d*$'),  # ns, ns1, ns2, etc.
+    re.compile(r'^dns\d*$'),  # dns, dns1, dns2, etc.
+    re.compile(r'^mx\d*$'),  # mx, mx1, mx2, etc.
+    re.compile(r'^ftp\d*$'),  # ftp, ftp1, ftp2, etc.
 }
 
 LOGOUT_REDIRECT_URL = "/"
