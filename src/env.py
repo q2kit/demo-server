@@ -86,6 +86,7 @@ def get_list_env(
         key: str: The name of the environment variable.
         separator: str: The separator to use to split the environment variable
             value.
+        type: type: The type to convert each item in the list to.
         default: Any: The default value to return if the environment variable
             is not set.
     Returns:
