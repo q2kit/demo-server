@@ -1,4 +1,4 @@
-name: Build and Release
+name: Docker Build and Deploy
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - "master"
 
 jobs:
-  build-and-push:
+  build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

@@ -4,7 +4,7 @@ from django.utils.deprecation import MiddlewareMixin
 
 
 class DisallowedHostMiddleware(MiddlewareMixin):
-    def process_request(self, request):
+    def process_request(self, request) -> HttpResponse | None:
         try:
             request.get_host()
         except DisallowedHost:
