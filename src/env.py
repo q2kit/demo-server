@@ -43,7 +43,7 @@ def get_env(key: str, default=NOTSET) -> str:
     value = os.getenv(key)
     if value is None:
         if default is NOTSET:
-            raise EnvNotSetError("%s is not set", key)
+            raise EnvNotSetError(f"{key} is not set")
         return str(default)
     return value
 
@@ -69,7 +69,7 @@ def get_bool_env(key: str, *, default: bool = False) -> bool:
     value = str(get_env(key, default)).lower()
     if value in VALID_BOOL_VALUES:
         return value in TRUTHY_VALUES
-    raise ValueError("Invalid value for %s: %s", (key, value))
+    raise ValueError(f"Invalid value for {key}: {value}")
 
 
 def get_int_env(key: str, default: int = NOTSET) -> int:
