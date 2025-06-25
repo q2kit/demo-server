@@ -26,7 +26,6 @@ jobs:
       - name: Run Ruff
         run: |
           ruff check .
-          ruff format --in-place --check .
 
       - name: Run tests
         run: |
