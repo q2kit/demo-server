@@ -1,0 +1,32 @@
+name: Build and Release
+
+on:
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Flake8
+        run: |
+          flake8 .
+
+      - name: Run tests
+        run: |
+          cp .env.example .env
+          python manage.py test
