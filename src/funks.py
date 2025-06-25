@@ -31,7 +31,7 @@ def domain_validator(domain) -> str:
     postfix = f".{HTTP_HOST}"
 
     if not domain.endswith(postfix):
-        raise ValidationError("Invalid domain. Must end with %s", postfix)
+        raise ValidationError(f"Invalid domain. Must end with '{postfix}'.")
 
     subdomain = domain.replace(postfix, "")
 
@@ -39,7 +39,7 @@ def domain_validator(domain) -> str:
         if subdomain == item or (
             isinstance(item, re.Pattern) and item.match(subdomain)
         ):
-            raise ValidationError("Invalid subdomain. '%s' is not allowed.", subdomain)
+            raise ValidationError(f"Invalid subdomain. '{subdomain}' is not allowed.")
 
     # min: 2, max: 63, a-z, 0-9, -, no leading or trailing -
     if not re.match(r"^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$", subdomain):
