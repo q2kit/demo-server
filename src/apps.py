@@ -6,5 +6,5 @@ class SrcConfig(AppConfig):
     name = "src"
     verbose_name = "Services"
 
-    def ready(self):
-        import src.signals  # noqa
+    def ready(self) -> None:
+        import src.signals  # noqa: F401, PLC0415

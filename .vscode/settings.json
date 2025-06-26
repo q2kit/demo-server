@@ -1,0 +1,11 @@
+{
+    "[python]": {
+        "editor.formatOnType": true,
+        "editor.defaultFormatter": "ms-python.autopep8",
+        "editor.formatOnSave": false,
+        "editor.wordWrap": "wordWrapColumn",
+        "editor.wordWrapColumn": 88,
+        "editor.rulers": [88],
+        "editor.tabSize": 4,
+    }
+}
