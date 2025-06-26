@@ -17,38 +17,29 @@ from src.widgets import UserSelect
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['domain']
+        fields = ["domain"]
         error_messages = {
-            'domain': {
-                'unique': _("This domain is already in use."),
-            }
+            "domain": {
+                "unique": _("This domain is already in use."),
+            },
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.fields['domain'].initial = f".{HTTP_HOST}"
+        self.fields["domain"].initial = f".{HTTP_HOST}"
 
-    def clean_domain(self):
-        return domain_validator(self.cleaned_data['domain'])
+    def clean_domain(self) -> str:
+        return domain_validator(self.cleaned_data["domain"])
 
 
 class ProjectFormSuperUser(ProjectForm):
-    class Meta:
-        model = Project
-        fields = ['domain', 'user']
-        error_messages = {
-            'domain': {
-                'unique': _("This domain is already in use."),
-            }
-        }
-
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.fields['user'].widget = widgets.RelatedFieldWidgetWrapper(
+        self.fields["user"].widget = widgets.RelatedFieldWidgetWrapper(
             UserSelect(
-                choices=self.fields['user'].choices,
+                choices=self.fields["user"].choices,
             ),
-            Project._meta.get_field('user').remote_field,
+            Project._meta.get_field("user").remote_field,  # noqa: SLF001
             admin_site,
             can_add_related=True,
             can_change_related=True,
@@ -56,10 +47,19 @@ class ProjectFormSuperUser(ProjectForm):
             can_view_related=True,
         )
 
-    def clean_user(self):
-        user = self.cleaned_data['user']
+    class Meta:
+        model = Project
+        fields = ["domain", "user"]
+        error_messages = {
+            "domain": {
+                "unique": _("This domain is already in use."),
+            },
+        }
+
+    def clean_user(self) -> str | None:
+        user = self.cleaned_data["user"]
         if not user.is_active and (
-            not hasattr(self.instance, 'user') or user != self.instance.user
+            not hasattr(self.instance, "user") or user != self.instance.user
         ):
             raise ValidationError(_("This user is inactive."))
 
@@ -75,15 +75,15 @@ class AdminAuthenticationForm(BaseAdminAuthenticationForm):
 
 
 class UserCreationForm(BaseUserCreationForm):
-    def clean_username(self):
+    def clean_username(self) -> str | None:
         username = super().clean_username()
         try:
             return username_validator(username) if username else None
         except ValidationError as e:
             self._update_errors(e)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.fields['username'].help_text = _(
-            "Must be between 2 and 24 characters long, contain only letters and numbers, and start with a letter"  # noqa
+        self.fields["username"].help_text = _(
+            "Must be between 2 and 24 characters long, contain only letters and numbers, and start with a letter.",  # noqa: E501
         )
