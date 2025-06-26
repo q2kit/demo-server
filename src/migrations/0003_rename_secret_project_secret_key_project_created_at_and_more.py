@@ -7,43 +7,43 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('src', '0002_alter_project_user'),
+        ("src", "0002_alter_project_user"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='project',
-            old_name='secret',
-            new_name='secret_key',
+            model_name="project",
+            old_name="secret",
+            new_name="secret_key",
         ),
         migrations.AddField(
-            model_name='project',
-            name='created_at',
+            model_name="project",
+            name="created_at",
             field=models.DateTimeField(
-                auto_now_add=True, default=django.utils.timezone.now
+                auto_now_add=True,
+                default=django.utils.timezone.now,
             ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='project',
-            name='last_connected_at',
+            model_name="project",
+            name="last_connected_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='project',
-            name='updated_at',
+            model_name="project",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='user',
+            model_name="project",
+            name="user",
             field=models.ForeignKey(
-                limit_choices_to={'is_active': True, 'is_superuser': False},
+                limit_choices_to={"is_active": True, "is_superuser": False},
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name='projects',
+                related_name="projects",
                 to=settings.AUTH_USER_MODEL,
             ),
         ),

@@ -6,23 +6,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         (
-            'src',
-            '0003_rename_secret_project_secret_key_project_created_at_and_more',  # noqa
+            "src",
+            "0003_rename_secret_project_secret_key_project_created_at_and_more",
         ),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='project',
-            name='user',
+            model_name="project",
+            name="user",
             field=models.ForeignKey(
-                limit_choices_to={'is_superuser': False},
+                limit_choices_to={"is_superuser": False},
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name='projects',
+                related_name="projects",
                 to=settings.AUTH_USER_MODEL,
             ),
         ),
