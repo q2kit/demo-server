@@ -15,7 +15,7 @@ from src.models import Project
 
 
 @receiver(post_save, sender=User)
-def create_user_profile_signal(sender, instance, created, **kwargs) -> None:
+def create_user_profile_signal(sender, instance, created, **kwargs):
     _ = (sender, kwargs)  # unused
     if created:
         create_user_profile(instance.username)
@@ -38,13 +38,13 @@ def create_user_profile_signal(sender, instance, created, **kwargs) -> None:
 
 
 @receiver(post_delete, sender=User)
-def delete_user_profile_signal(sender, instance, **kwargs) -> None:
+def delete_user_profile_signal(sender, instance, **kwargs):
     _ = (sender, kwargs)  # unused
     delete_user_profile(instance.username)
 
 
 @receiver(pre_save, sender=Project)
-def save_project_signal(sender, instance, **kwargs) -> None:
+def save_project_signal(sender, instance, **kwargs):
     _ = (sender, kwargs)  # unused
     if instance.pk:
         old_domain = Project.objects.get(id=instance.id).domain
@@ -54,7 +54,7 @@ def save_project_signal(sender, instance, **kwargs) -> None:
 
 
 @receiver(post_delete, sender=Project)
-def delete_project_signal(sender, instance, **kwargs) -> None:
+def delete_project_signal(sender, instance, **kwargs):
     _ = (sender, kwargs)  # unused
     remove_502_page(instance.domain)
     remove_nginx_conf(instance.domain)

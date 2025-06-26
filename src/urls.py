@@ -1,8 +1,8 @@
-"""URL configuration for src project.
+"""
+URL configuration for src project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
-
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -13,7 +13,6 @@ Class-based views
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-
 """
 
 from django.contrib import admin
@@ -37,14 +36,14 @@ admin.site.index_title = "Welcome to Demos"
 admin.site.site_url = None
 
 urlpatterns = [
-    path("health", lambda _: HttpResponse("OK")),
-    path("admin/login/", LoginView.as_view(), name="login"),
-    path("admin/signup/", signup, name="signup"),
-    path("admin/", admin.site.urls),
-    path("get_connection_info/", get_connection_info),
-    path("get_key_file/", get_key_file),
-    path("connect/", connect),
-    path("disconnect/", disconnect),
-    path("keep_alive/", keep_alive_connection),
-    path("", lambda _: redirect("admin/")),
+    path('health', lambda _: HttpResponse('OK')),
+    path('admin/login/', LoginView.as_view(), name='login'),
+    path('admin/signup/', signup, name='signup'),
+    path('admin/', admin.site.urls),
+    path('get_connection_info/', get_connection_info),
+    path('get_key_file/', get_key_file),
+    path('connect/', connect),
+    path('disconnect/', disconnect),
+    path('keep_alive/', keep_alive_connection),
+    path('', lambda _: redirect('admin/')),
 ]
