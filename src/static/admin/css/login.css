@@ -60,6 +60,10 @@
     text-align: center;
 }
 
+.login .submit-row input:disabled {
+    cursor: not-allowed;
+}
+
 .cf-turnstile {
     display: flex;
     justify-content: center;

@@ -75,7 +75,11 @@
   </div>
 
   {% if cloudflare_sitekey %}
-  <div class="cf-turnstile" data-sitekey="{{ cloudflare_sitekey }}"></div>
+  <div class="cf-turnstile"
+    data-callback="onTurnstileSuccess"
+    data-expired-callback="onTurnstileExpired"
+    data-sitekey="{{ cloudflare_sitekey }}">
+  </div>
   {% endif %}
 
   {% url 'admin_password_reset' as password_reset_url %}
@@ -86,8 +90,17 @@
   {% endif %}
 
   <div class="submit-row">
-    <input type="submit" value="{% translate 'Log in' %}">
+    <input type="submit" value="{% translate 'Log in' %}" {% if cloudflare_sitekey %}disabled{% endif %}>
   </div>
+
+  <script>
+    function onTurnstileSuccess(token) {
+      document.querySelector("#login-form input[type=submit]").disabled = false;
+    };
+    function onTurnstileExpired() {
+      document.querySelector("#login-form input[type=submit]").disabled = true;
+    };
+  </script>
 </form>
 
 </div>

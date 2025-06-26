@@ -66,13 +66,23 @@
       {{ field.help_text }}
     </div>
   {% endfor %}
-  <div class="cf-turnstile" data-sitekey="{{ cloudflare_sitekey }}"></div>
+
+  {% if cloudflare_sitekey %}
+  <div class="cf-turnstile"
+    data-callback="onTurnstileSuccess"
+    data-expired-callback="onTurnstileExpired"
+    data-sitekey="{{ cloudflare_sitekey }}">
+  </div>
+  {% endif %}
+
   <div class="login-link">
     <a tabindex="-1" href="{% url 'admin:login' %}">Already have an account?</a>
   </div>
+
   <div class="submit-row">
-    <input type="submit" value="Sign Up">
+    <input type="submit" value="Sign Up" {% if cloudflare_sitekey %}disabled{% endif %}>
   </div>
+
   <script>
     var errorInput = document.querySelector(".field-error>input");
     if (errorInput) {
@@ -82,6 +92,12 @@
         errorInput.focus();
       }
     }
+    function onTurnstileSuccess(token) {
+      document.querySelector("#register-form input[type=submit]").disabled = false;
+    };
+    function onTurnstileExpired() {
+      document.querySelector("#register-form input[type=submit]").disabled = true;
+    };
   </script>
 </form>
 {% endblock %}

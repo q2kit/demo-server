@@ -164,6 +164,7 @@ class LoginView(BaseLoginView):
         context = super().get_context_data(**kwargs)
         if not settings.DEBUG:
             context["cloudflare_sitekey"] = CLOUDFLARE_SITE_KEY
+
         return context
 
 
@@ -187,10 +188,11 @@ def signup(request) -> HttpResponse:
     else:
         form = UserCreationForm()
 
-    context = {
+    context: dict[str, Any] = {
         "form": form,
-        "cloudflare_sitekey": CLOUDFLARE_SITE_KEY,
     }
+    if not settings.DEBUG:
+        context["cloudflare_sitekey"] = CLOUDFLARE_SITE_KEY
 
     return render(request, "admin/signup.html", context)
 
