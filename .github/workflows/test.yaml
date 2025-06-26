@@ -1,4 +1,4 @@
-name: Run Tests and Linting
+name: Build and Release
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - "**"
 
 jobs:
-  test_and_lint:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,12 +20,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Ruff
+      - name: Flake8
         run: |
-          ruff check .
+          flake8 .
 
       - name: Run tests
         run: |

@@ -3,11 +3,9 @@ from typing import Any
 
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
-from django.contrib.admin.options import InlineModelAdmin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group, User
 from django.db.models import Count
-from django.db.models.query import QuerySet
 from django.http.request import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
@@ -16,42 +14,42 @@ from src.models import Project
 
 
 class SuperAdminFilter(SimpleListFilter):
-    def __init__(self, request, params, model, model_admin) -> None:
+    def __init__(self, request, params, model, model_admin):
         super().__init__(request, params, model, model_admin)
         if not request.user.is_superuser:
             self.lookup_choices = []
 
 
 class ActiveUserFilter(SuperAdminFilter):
-    title = _("active user")
-    parameter_name = "is_user_active"
+    title = _('active user')
+    parameter_name = 'is_user_active'
 
-    def lookups(self, request, model_admin) -> Sequence[tuple[str, str]]:  # noqa: ARG002
+    def lookups(self, request, model_admin):  # noqa: U100
         return (
-            ("1", _("Yes")),
-            ("0", _("No")),
+            ('1', _('Yes')),
+            ('0', _('No')),
         )
 
-    def queryset(self, request, queryset) -> QuerySet[Project]:  # noqa: ARG002
-        if self.value() == "1":
+    def queryset(self, request, queryset):  # noqa: U100
+        if self.value() == '1':
             return queryset.filter(user__is_active=True)
-        if self.value() == "0":
+        if self.value() == '0':
             return queryset.filter(user__is_active=False)
         return queryset
 
 
 class UserHasProjectsFilter(SuperAdminFilter):
-    title = _("user")
-    parameter_name = "user"
+    title = _('user')
+    parameter_name = 'user'
 
-    def lookups(self, request, model_admin) -> Sequence[tuple[str, str]]:  # noqa: ARG002
+    def lookups(self, request, model_admin):  # noqa: U100
         return (
-            User.objects.annotate(projects_count=Count("projects"))
+            User.objects.annotate(projects_count=Count('projects'))
             .filter(projects_count__gt=0)
-            .values_list("id", "username")
+            .values_list('id', 'username')
         )
 
-    def queryset(self, request, queryset) -> QuerySet[Project]:  # noqa: ARG002
+    def queryset(self, request, queryset):  # noqa: U100
         if self.value():
             return queryset.filter(user=self.value())
         return queryset
@@ -59,75 +57,74 @@ class UserHasProjectsFilter(SuperAdminFilter):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    search_fields = ("domain", "user__username")
-    list_display_links = ("domain",)
+    search_fields = ('domain', 'user__username')
+    list_display_links = ('domain',)
     list_filter = (UserHasProjectsFilter, ActiveUserFilter)
 
     def get_readonly_fields(
-        self,
-        request: HttpRequest,
-        obj: Project | None,
-    ) -> Sequence[str]:
+        self, request: HttpRequest, obj: Any | None = ...
+    ) -> Sequence[str]:  # noqa
         if obj:
             if request.user.is_superuser:
-                return ("secret_key",)
-            return ("domain", "secret_key")
+                return ('secret_key',)
+            else:
+                return ('domain', 'secret_key')
         return ()
 
     def get_list_display(self, request: HttpRequest) -> Sequence[str]:
         if request.user.is_superuser:
             return (
-                "domain",
-                "user",
-                "secret_key",
-                "created_at",
-                "updated_at",
-                "last_connected_at",
+                'domain',
+                'user',
+                'secret_key',
+                'created_at',
+                'updated_at',
+                'last_connected_at',
             )
-        return (
-            "domain",
-            "secret_key",
-            "created_at",
-            "updated_at",
-            "last_connected_at",
-        )
+        else:
+            return (
+                'domain',
+                'secret_key',
+                'created_at',
+                'updated_at',
+                'last_connected_at',
+            )
 
     def get_form(
         self,
         request: HttpRequest,
-        *args,  # noqa: ARG002
-        **kwargs,  # noqa: ARG002
-    ) -> ProjectForm | ProjectFormSuperUser:
+        _obj: Any | None = ...,
+        _change: bool = ...,
+        **_kwargs: Any
+    ) -> Any:
         if request.user.is_superuser:
             return ProjectFormSuperUser
-        return ProjectForm
+        else:
+            return ProjectForm
 
     def get_fields(
-        self,
-        request: HttpRequest,
-        obj: Project | None = None,
-    ) -> Sequence[Callable[..., Any] | str]:
+        self, request: HttpRequest, obj: Any | None = ...
+    ) -> Sequence[Callable[..., Any] | str]:  # noqa
         if obj:
             if request.user.is_superuser:
-                return ("domain", "user", "secret_key")
-            return ("domain", "secret_key")
-        if request.user.is_superuser:
-            return ("domain", "user")
-        return ("domain",)
+                return ('domain', 'user', 'secret_key')
+            else:
+                return ('domain', 'secret_key')
+        else:
+            if request.user.is_superuser:
+                return ('domain', 'user')
+            else:
+                return ('domain',)
 
-    def get_queryset(self, request: HttpRequest) -> QuerySet[Project]:
+    def get_queryset(self, request: HttpRequest) -> Any:
         qs = super().get_queryset(request).select_related("user")
         if request.user.is_superuser:
             return qs
         return qs.filter(user=request.user)
 
     def save_model(
-        self,
-        request: HttpRequest,
-        obj: Project,
-        form: ProjectForm | ProjectFormSuperUser,
-        change: bool,  # noqa: FBT001
-    ) -> None:
+        self, request: HttpRequest, obj: Any, form: Any, change: bool
+    ) -> None:  # noqa
         # if normal user create project
         if not change and not request.user.is_superuser:
             obj.user = request.user
@@ -153,34 +150,34 @@ class ProjectInline(admin.TabularInline):
     can_delete = False
     show_change_link = True
 
-    def get_queryset(self, request: HttpRequest) -> QuerySet[Project]:
+    def get_queryset(self, request: HttpRequest):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
         return qs.filter(user=request.user)
 
-    def has_add_permission(self, request, obj=None) -> bool:  # noqa: ARG002
+    def has_add_permission(self, request, obj=None):  # noqa
         return False
 
 
 class IsGhostUserFilter(SuperAdminFilter):
-    title = _("ghost user")
-    parameter_name = "is_ghost_user"
+    title = _('ghost user')
+    parameter_name = 'is_ghost_user'
 
-    def lookups(self, request, model_admin) -> Sequence[tuple[str, str]]:  # noqa: ARG002
+    def lookups(self, request, model_admin):  # noqa
         return (
-            ("1", _("Yes")),
-            ("0", _("No")),
+            ('1', _('Yes')),
+            ('0', _('No')),
         )
 
-    def queryset(self, request, queryset) -> QuerySet[User]:  # noqa: ARG002
-        if self.value() == "1":
-            return queryset.annotate(projects_count=Count("projects")).filter(
-                projects_count=0,
+    def queryset(self, request, queryset):  # noqa
+        if self.value() == '1':
+            return queryset.annotate(projects_count=Count('projects')).filter(
+                projects_count=0
             )
-        if self.value() == "0":
-            return queryset.annotate(projects_count=Count("projects")).filter(
-                projects_count__gt=0,
+        if self.value() == '0':
+            return queryset.annotate(projects_count=Count('projects')).filter(
+                projects_count__gt=0
             )
         return queryset
 
@@ -208,7 +205,7 @@ class CustomUserAdmin(UserAdmin):
                     "first_name",
                     "last_name",
                     "email",
-                ),
+                )
             },
         ),
         (
@@ -222,29 +219,27 @@ class CustomUserAdmin(UserAdmin):
     inlines = [ProjectInline]
     list_filter = ("is_active", IsGhostUserFilter)
 
-    def get_queryset(self, request: HttpRequest) -> QuerySet[User]:
+    def get_queryset(self, request: HttpRequest) -> Any:
         return (
             super()
             .get_queryset(request)
-            .annotate(projects_count=Count("projects"))
+            .annotate(projects_count=Count('projects'))
             .filter(is_superuser=False)
         )
 
     def get_readonly_fields(
-        self,
-        request: HttpRequest,
-        obj: User | None,
-    ) -> Sequence[str]:
+        self, request: HttpRequest, obj: Any | None = ...
+    ) -> Sequence[str]:  # noqa
         res = super().get_readonly_fields(request, obj)
         if obj:
-            res += ("username",)
+            res += ('username',)
         return res
 
-    @admin.display(description=_("Projects count"), ordering="projects_count")
-    def projects_count(self, obj: User) -> int:
+    @admin.display(description=_("Projects count"), ordering='projects_count')
+    def projects_count(self, obj: Any) -> int:
         return obj.projects_count
 
-    def get_inline_instances(self, request, obj=None) -> list[InlineModelAdmin]:
+    def get_inline_instances(self, request, obj=None):
         if obj is None:
             return []
         return super().get_inline_instances(request, obj)

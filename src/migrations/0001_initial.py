@@ -8,6 +8,7 @@ from src.funks import gen_secret_key
 
 
 class Migration(migrations.Migration):
+
     initial = True
 
     dependencies = [
@@ -16,29 +17,29 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="Project",
+            name='Project',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        verbose_name='ID',
                     ),
-                ),
-                ("domain", models.CharField(max_length=255, unique=True)),
+                ),  # noqa
+                ('domain', models.CharField(max_length=255, unique=True)),
                 (
-                    "secret",
+                    'secret',
                     models.CharField(default=gen_secret_key, max_length=255),
-                ),
+                ),  # noqa
                 (
-                    "user",
+                    'user',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         to=settings.AUTH_USER_MODEL,
                     ),
-                ),
+                ),  # noqa
             ],
         ),
     ]
