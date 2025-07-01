@@ -8,6 +8,7 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -21,16 +22,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Build Docker image
+      - name: Build and push multi-arch Docker image
         run: |
-          docker build -t demos:latest .
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --push \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/demos:latest \
+            .
 
-      - name: Push Docker image
-        run: |
-          docker tag demos:latest ${{ secrets.DOCKERHUB_USERNAME }}/demos:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/demos:latest
-
-      - name: Pull Docker image
+      - name: Pull Docker image on remote server and restart container
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
