@@ -1,4 +1,4 @@
-FROM python:3.11.6-slim-bookworm
+FROM python:3.12-slim
 RUN apt update && apt autoremove -y && apt upgrade -y
 RUN apt install -y openssh-server nginx redis-server
 RUN ssh-keygen -A
@@ -12,6 +12,7 @@ COPY sshd_config /etc/ssh/sshd_config
 WORKDIR /srv/demos
 COPY . .
 RUN cp .env.example .env
-RUN pip install -r requirements.txt
+RUN pip install uv
+RUN uv sync
 RUN python manage.py collectstatic --noinput
 CMD nginx && redis-server --daemonize yes && gunicorn -w 5 src.wsgi:application -b 0.0.0.0:8000 --daemon && /usr/sbin/sshd -D
