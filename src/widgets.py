@@ -4,7 +4,7 @@ from django import forms
 
 
 class UserSelect(forms.Select):
-    def create_option(  # noqa: PLR0913
+    def create_option(
         self,
         name,
         value,

@@ -15,7 +15,7 @@ class Command(BaseCommand):
         for user in User.objects.filter(is_superuser=False):
             try:
                 create_user_profile(user.username)
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 print("~" * 50)
                 print(f"Error: {e}")
                 print("User: ", user.username)
@@ -28,7 +28,7 @@ class Command(BaseCommand):
                 project.save()
                 gen_502_page(project.domain)
                 gen_default_nginx_conf(project.domain)
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 print("~" * 50)
                 print(f"Error: {e}")
                 print("Project: ", project.domain)
