@@ -33,11 +33,9 @@ class ActiveUserFilter(SuperAdminFilter):
         )
 
     def queryset(self, request, queryset) -> QuerySet[Project]:  # noqa: ARG002
-        if self.value() == "1":
-            return queryset.filter(user__is_active=True)
         if self.value() == "0":
             return queryset.filter(user__is_active=False)
-        return queryset
+        return queryset.filter(user__is_active=True)
 
 
 class UserHasProjectsFilter(SuperAdminFilter):
