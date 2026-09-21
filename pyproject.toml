@@ -1,3 +1,26 @@
+[project]
+name = "demos"
+version = "1.0"
+requires-python = "==3.12.*"
+dependencies = [
+    "concurrent-log-handler>=0.9.29",
+    "django>=6.0.4",
+    "django-ipware>=7.0.1",
+    "django-redis>=6.0.0",
+    "gunicorn>=25.3.0",
+    "jinja2>=3.1.6",
+    "python-dotenv>=1.2.2",
+    "requests>=2.33.1",
+    "rsa>=4.9.1",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.5.1",
+    "ruff>=0.14.10",
+    "black>=25.12.0",
+]
+
 [tool.ruff]
 target-version = "py312"
 line-length = 88
@@ -14,10 +37,14 @@ exclude = [
 
 [tool.ruff.lint]
 select = ["ALL"]
+allowed-confusables = []
 ignore = [
     "ANN001",
     "ANN002",
     "ANN003",
+    "ANN201",
+    "ANN202",
+    "BLE001",
     "D100",
     "D101",
     "D102",
@@ -28,7 +55,20 @@ ignore = [
     "D107",
     "EM101",
     "EM102",
+    "ERA001",
+    "FIX002",
+    "G004",
     "LOG015",
+    "PTH",
     "RUF012",
+    "TD002",
+    "TD003",
+    "TRY400",
     "TRY003",
 ]
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
+
+[tool.ruff.lint.pylint]
+max-args = 10
