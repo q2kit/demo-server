@@ -194,6 +194,7 @@ LOGGING = {
     "disable_existing_loggers": True,
     "formatters": {
         "file": {"format": "[%(asctime)s] %(levelname)s %(message)s"},
+        "standard": {"format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"},
     },
     "handlers": {
         "file": {
@@ -207,10 +208,15 @@ LOGGING = {
             "delay": False,
             "mode": "a",
         },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "standard",
+        },
     },
     "loggers": {
         "": {
-            "handlers": ["file"],
+            "handlers": ["file", "console"],
             "level": "DEBUG",
             "propagate": True,
         },
